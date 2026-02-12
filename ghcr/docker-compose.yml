@@ -1,0 +1,38 @@
+services:
+  web:
+    image: ghcr.io/sergioitremotejobs2025-sketch/azacan-ecom:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - static_volume:/app/staticfiles
+      - ../ecom:/app
+
+  db:
+    image: pgvector/pgvector:pg15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-pgvector.sql:/docker-entrypoint-initdb.d/init-pgvector.sql
+      - ./book_store_db_backup.sql:/docker-entrypoint-initdb.d/z_book_store_db_backup.sql
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  static_volume:
