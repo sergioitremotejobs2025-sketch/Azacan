@@ -34,6 +34,10 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+    defaults:
+      run:
+        working-directory: ecom
+
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
@@ -66,8 +70,8 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
-        context: .
-        file: ./Dockerfile
+        context: ./ecom
+        file: ./ecom/Dockerfile
         push: true
         tags: ghcr.io/${{ env.REPO_NAME }}:latest
 
