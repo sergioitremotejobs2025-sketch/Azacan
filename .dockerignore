@@ -1,0 +1,31 @@
+# Exclude local virtual environments
+myenv/
+venv/
+.venv/
+
+# Exclude node_modules (will be installed fresh)
+node_modules/
+**/node_modules/
+
+# Exclude Git
+.git/
+
+# Exclude IDE folders
+.vscode/
+.idea/
+.gemini/
+
+# Exclude Python cache
+__pycache__/
+*.pyc
+
+# Exclude Django backend (not needed for frontend)
+# ecom/
+
+# Exclude Next.js build output (will be built fresh)
+.next/
+out/
+
+# Exclude k8s manifests and docker-compose
+k8s-manifests/
+docker-compose-app/

@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-init-scripts
+  namespace: libro-mind
+data:
+  init-pgvector.sql: |
+    -- Enable pgvector extension
+    CREATE EXTENSION IF NOT EXISTS vector;
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-init-job
+  namespace: libro-mind
+spec:
+  template:
+    spec:
+      containers:
+      - name: db-init
+        image: postgres:15
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for PostgreSQL to be ready..."
+          until pg_isready -h postgres-service -U postgres; do
+            sleep 2
+          done
+          echo "PostgreSQL is ready. Initializing pgvector..."
+          psql -h postgres-service -U postgres -d postgres -c "CREATE EXTENSION IF NOT EXISTS vector;"
+          echo "pgvector extension created successfully!"
+          
+          # Optional: Import backup if you want to mount it as a ConfigMap
+          # Note: For large SQL files (like book_store_db_backup.sql), 
+          # you should manually import it after the cluster is running
+          # using: kubectl cp book_store_db_backup.sql libro-mind/postgres-0:/tmp/
+          # then: kubectl exec -it postgres-0 -n libro-mind -- psql -U postgres -d postgres -f /tmp/book_store_db_backup.sql
+        env:
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: libro-mind-secrets
+              key: POSTGRES_PASSWORD
+      restartPolicy: OnFailure
+  backoffLimit: 5

@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Header -->
+<header class="bg-dark py-5 mb-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Checkout</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Review your shipping details and complete your order</p>
+        </div>
+    </div>
+</header>
+
+<div class="container mb-5">
+    <div class="row g-5">
+        <!-- Main Content: Shipping Form -->
+        <div class="col-md-7 col-lg-8">
+            <h4 class="mb-3">Shipping Address</h4>
+
+            <div class="card p-4 shadow-sm border-0 bg-light">
+                <form method="POST" action="{% url 'billing_info' %}" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    <div class="row g-3">
+                        <!-- Full Name -->
+                        <div class="col-12">
+                            <label for="{{ form.shipping_full_name.id_for_label }}" class="form-label">Full Name</label>
+                            {{ form.shipping_full_name }}
+                            <div class="invalid-feedback">Valid full name is required.</div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-12">
+                            <label for="{{ form.shipping_email.id_for_label }}" class="form-label">Email <span
+                                    class="text-muted">(Optional)</span></label>
+                            {{ form.shipping_email }}
+                            <div class="invalid-feedback">Please enter a valid email address for shipping updates.</div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="col-12">
+                            <label for="{{ form.shipping_phone.id_for_label }}" class="form-label">Phone</label>
+                            {{ form.shipping_phone }}
+                            <div class="invalid-feedback">Please enter a valid phone number.</div>
+                        </div>
+
+
+                        <!-- Address -->
+                        <div class="col-12">
+                            <label for="{{ form.shipping_address1.id_for_label }}" class="form-label">Address</label>
+                            {{ form.shipping_address1 }}
+                            <div class="invalid-feedback">Please enter your shipping address.</div>
+                        </div>
+
+                        <!-- Address 2 -->
+                        <div class="col-12">
+                            <label for="{{ form.shipping_address2.id_for_label }}" class="form-label">Address 2 <span
+                                    class="text-muted">(Optional)</span></label>
+                            {{ form.shipping_address2 }}
+                        </div>
+
+                        <!-- Country -->
+                        <div class="col-md-5">
+                            <label for="{{ form.shipping_country.id_for_label }}" class="form-label">Country</label>
+                            {{ form.shipping_country }}
+                            <div class="invalid-feedback">Please select a valid country.</div>
+                        </div>
+
+                        <!-- State -->
+                        <div class="col-md-4">
+                            <label for="{{ form.shipping_state.id_for_label }}" class="form-label">State</label>
+                            {{ form.shipping_state }}
+                            <div class="invalid-feedback">Please provide a valid state.</div>
+                        </div>
+
+                        <!-- Zip -->
+                        <div class="col-md-3">
+                            <label for="{{ form.shipping_pincode.id_for_label }}" class="form-label">Zip/Code</label>
+                            {{ form.shipping_pincode }}
+                            <div class="invalid-feedback">Zip code required.</div>
+                        </div>
+
+                        <!-- City -->
+                        <div class="col-md-12">
+                            <label for="{{ form.shipping_city.id_for_label }}" class="form-label">City</label>
+                            {{ form.shipping_city }}
+                            <div class="invalid-feedback">City required.</div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <button class="w-100 btn btn-primary btn-lg rounded-pill" type="submit">Continue to Billing</button>
+                    <a href="{% url 'cart_summary' %}"
+                        class="w-100 btn btn-outline-secondary btn-lg rounded-pill mt-2">Back to Cart</a>
+                </form>
+            </div>
+            <!-- Async Recommendations -->
+            {% if user.is_authenticated %}
+            <div id="recommendations-container" class="mt-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body text-center py-4">
+                        <div class="spinner-border text-info" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="text-muted mt-2 mb-0">Personalizing recommendations...</p>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                $(document).ready(function () {
+                    $.ajax({
+                        url: "{% url 'cart_recommendations' %}",
+                        type: "GET",
+                        success: function (data) {
+                            if (data && data.trim() !== "") {
+                                $("#recommendations-container").html(data).hide().fadeIn();
+                            } else {
+                                $("#recommendations-container").remove();
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.log("Error loading recommendations:", error);
+                            $("#recommendations-container").remove();
+                        }
+                    });
+                });
+            </script>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar: Cart Summary -->
+        <div class="col-md-5 col-lg-4">
+            <div class="card shadow-sm border-0 position-sticky" style="top: 2rem;">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h4 class="d-flex justify-content-between align-items-center mb-0">
+                        <span class="text-primary">Your cart</span>
+                        <span class="badge bg-primary rounded-pill">{{ cart|length }}</span>
+                    </h4>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for item in cart %}
+                        <li class="list-group-item d-flex justify-content-between lh-sm py-3">
+                            <div class="me-2">
+                                <h6 class="my-0">{{ item.product.name }}</h6>
+                                <small class="text-muted">Qty: {{ item.quantity }}</small>
+                            </div>
+                            <span class="text-muted">{{ item.total_price }}€</span>
+                        </li>
+                        {% endfor %}
+
+                        <li class="list-group-item d-flex justify-content-between py-3 bg-light">
+                            <span class="fw-bold">Total (USD)</span>
+                            <strong class="text-primary">{{ totals }}€</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).on('click', '.add-rec-to-cart', function (e) {
+        e.preventDefault();
+        var productid = $(this).data('id');
+
+        $.ajax({
+            url: '{% url "cart_add" %}',
+            type: 'POST',
+            data: {
+                'product_id': productid,
+                'product_qty': 1,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'action': 'post',
+            },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        });
+    });
+</script>
+{% endblock %}

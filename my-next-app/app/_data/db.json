@@ -1,0 +1,642 @@
+{
+  "books": [
+    {
+      "id": "7c8ddd4c-3b3c-40cb-bf2d-5708f9fc1b43",
+      "title": "la materia oscura Recommendation 1",
+      "author": "Author 1",
+      "description": "This is a premium book result for your interest in \"la materia oscura\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "la materia oscura",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:49:42.415Z"
+    },
+    {
+      "id": "7d37d88e-387b-42b8-ad3f-c04d47ae951d",
+      "title": "la materia oscura Recommendation 2",
+      "author": "Author 2",
+      "description": "This is a premium book result for your interest in \"la materia oscura\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "la materia oscura",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:49:42.416Z"
+    },
+    {
+      "id": "f9db7603-6598-4a1a-8c00-e8c9ba6d795c",
+      "title": "la materia oscura Recommendation 3",
+      "author": "Author 3",
+      "description": "This is a premium book result for your interest in \"la materia oscura\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "la materia oscura",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:49:42.416Z"
+    },
+    {
+      "id": "a2e5703e-ac0d-4e01-891d-325b6995c7ae",
+      "title": "la materia oscura Recommendation 4",
+      "author": "Author 4",
+      "description": "This is a premium book result for your interest in \"la materia oscura\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "la materia oscura",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:49:42.416Z"
+    },
+    {
+      "id": "17a4296b-3cb5-4fdf-be12-9dfde2115af0",
+      "title": "la materia oscura Recommendation 5",
+      "author": "Author 5",
+      "description": "This is a premium book result for your interest in \"la materia oscura\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "la materia oscura",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:49:42.416Z"
+    },
+    {
+      "id": "367adf41-400b-4765-830e-80d56d651ade",
+      "title": "el big ben Recommendation 1",
+      "author": "Author 1",
+      "description": "This is a premium book result for your interest in \"el big ben\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "el big ben",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:49:48.212Z"
+    },
+    {
+      "id": "06c279af-c9ff-49e6-aae4-6fb802b1d5a7",
+      "title": "el big ben Recommendation 2",
+      "author": "Author 2",
+      "description": "This is a premium book result for your interest in \"el big ben\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "el big ben",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:49:48.212Z"
+    },
+    {
+      "id": "f2406e49-e452-4ba5-8d46-5ecee3d98514",
+      "title": "el big ben Recommendation 3",
+      "author": "Author 3",
+      "description": "This is a premium book result for your interest in \"el big ben\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "el big ben",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:49:48.212Z"
+    },
+    {
+      "id": "f309a123-3691-425e-b44d-2740b74e2637",
+      "title": "el big ben Recommendation 4",
+      "author": "Author 4",
+      "description": "This is a premium book result for your interest in \"el big ben\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "el big ben",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:49:48.212Z"
+    },
+    {
+      "id": "250a0f5c-b48e-47cc-9416-a1f2286e4ce3",
+      "title": "el big ben Recommendation 5",
+      "author": "Author 5",
+      "description": "This is a premium book result for your interest in \"el big ben\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "el big ben",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:49:48.212Z"
+    },
+    {
+      "id": "61ff8e9d-5913-44d6-847c-5dfbe1aa80cf",
+      "title": "roma Recommendation 1",
+      "author": "Author 1",
+      "description": "This is a premium book result for your interest in \"roma\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "roma",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:49:51.536Z"
+    },
+    {
+      "id": "49d28097-c4cb-4b4b-8031-d2040b61d62e",
+      "title": "roma Recommendation 2",
+      "author": "Author 2",
+      "description": "This is a premium book result for your interest in \"roma\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "roma",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:49:51.536Z"
+    },
+    {
+      "id": "6d04aa54-7038-4432-b621-ecbe914e4cb0",
+      "title": "roma Recommendation 3",
+      "author": "Author 3",
+      "description": "This is a premium book result for your interest in \"roma\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "roma",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:49:51.536Z"
+    },
+    {
+      "id": "459a1b1d-b651-4772-b890-0c20f343cf5e",
+      "title": "roma Recommendation 4",
+      "author": "Author 4",
+      "description": "This is a premium book result for your interest in \"roma\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "roma",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:49:51.536Z"
+    },
+    {
+      "id": "8f8b8207-e162-419d-afe4-24e69ce2a2d3",
+      "title": "roma Recommendation 5",
+      "author": "Author 5",
+      "description": "This is a premium book result for your interest in \"roma\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "roma",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:49:51.536Z"
+    },
+    {
+      "id": "6e14fa93-d570-4d20-bb41-dfd1724df58d",
+      "title": "historia antigua Recommendation 1",
+      "author": "Author 1",
+      "description": "This is a premium book result for your interest in \"historia antigua\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "historia antigua",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:04.158Z"
+    },
+    {
+      "id": "2ebeb8d3-e793-4b05-b24d-90325d0daa3f",
+      "title": "historia antigua Recommendation 2",
+      "author": "Author 2",
+      "description": "This is a premium book result for your interest in \"historia antigua\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "historia antigua",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:04.158Z"
+    },
+    {
+      "id": "b50608db-c534-4112-90ab-ef4ee652022c",
+      "title": "historia antigua Recommendation 3",
+      "author": "Author 3",
+      "description": "This is a premium book result for your interest in \"historia antigua\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "historia antigua",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:04.158Z"
+    },
+    {
+      "id": "bff0d50e-dc2f-403d-9279-525d14d0626e",
+      "title": "historia antigua Recommendation 4",
+      "author": "Author 4",
+      "description": "This is a premium book result for your interest in \"historia antigua\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "historia antigua",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:04.158Z"
+    },
+    {
+      "id": "c2965924-cd20-4a1a-a248-168fced89e31",
+      "title": "historia antigua Recommendation 5",
+      "author": "Author 5",
+      "description": "This is a premium book result for your interest in \"historia antigua\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "historia antigua",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:04.158Z"
+    },
+    {
+      "id": "8983fa56-c140-4fd6-8097-32b3ae42dcd9",
+      "title": "el colapso del 29 Recommendation 1",
+      "author": "Author 1",
+      "description": "This is a premium book result for your interest in \"el colapso del 29\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "el colapso del 29",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:11.978Z"
+    },
+    {
+      "id": "158b939b-0d5b-45e3-934c-9b7b805ec82c",
+      "title": "el colapso del 29 Recommendation 2",
+      "author": "Author 2",
+      "description": "This is a premium book result for your interest in \"el colapso del 29\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "el colapso del 29",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:11.978Z"
+    },
+    {
+      "id": "1a3f2fa7-a91b-4cde-bb2e-cd72891be49c",
+      "title": "el colapso del 29 Recommendation 3",
+      "author": "Author 3",
+      "description": "This is a premium book result for your interest in \"el colapso del 29\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "el colapso del 29",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:11.978Z"
+    },
+    {
+      "id": "c85674da-1731-4015-9bd0-d665f7162683",
+      "title": "el colapso del 29 Recommendation 4",
+      "author": "Author 4",
+      "description": "This is a premium book result for your interest in \"el colapso del 29\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "el colapso del 29",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:11.978Z"
+    },
+    {
+      "id": "13b23ecb-93f2-4040-8fb0-a88b9224d48f",
+      "title": "el colapso del 29 Recommendation 5",
+      "author": "Author 5",
+      "description": "This is a premium book result for your interest in \"el colapso del 29\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "el colapso del 29",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:11.978Z"
+    },
+    {
+      "id": "ecfa9a9f-5b7e-47e1-b5fe-ea325d8690b3",
+      "title": "phisicologia Recommendation 1",
+      "author": "Author 1",
+      "description": "This is a premium book result for your interest in \"phisicologia\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "phisicologia",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:31.833Z"
+    },
+    {
+      "id": "634b4309-eaa7-4e18-a911-fcacc1e29c77",
+      "title": "phisicologia Recommendation 2",
+      "author": "Author 2",
+      "description": "This is a premium book result for your interest in \"phisicologia\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "phisicologia",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:31.833Z"
+    },
+    {
+      "id": "a4117ea4-7c94-44d4-9f98-7f28e6672aa6",
+      "title": "phisicologia Recommendation 3",
+      "author": "Author 3",
+      "description": "This is a premium book result for your interest in \"phisicologia\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "phisicologia",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:31.833Z"
+    },
+    {
+      "id": "095bd7fc-ca89-48ac-b4ac-6bc9b7c57eea",
+      "title": "phisicologia Recommendation 4",
+      "author": "Author 4",
+      "description": "This is a premium book result for your interest in \"phisicologia\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "phisicologia",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:31.833Z"
+    },
+    {
+      "id": "9f9efa0d-d288-4bed-8b4f-aa6dbf5bf568",
+      "title": "phisicologia Recommendation 5",
+      "author": "Author 5",
+      "description": "This is a premium book result for your interest in \"phisicologia\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "phisicologia",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:31.833Z"
+    },
+    {
+      "id": "03564772-c993-4e2a-b2c6-0e49114bfd96",
+      "title": "azacan Recommendation 1",
+      "author": "Author 1",
+      "description": "This is a premium book result for your interest in \"azacan\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "azacan",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:35.761Z"
+    },
+    {
+      "id": "620f2082-b271-4993-a7f8-d5c5f488ecb3",
+      "title": "azacan Recommendation 2",
+      "author": "Author 2",
+      "description": "This is a premium book result for your interest in \"azacan\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "azacan",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:35.761Z"
+    },
+    {
+      "id": "f508437f-2f41-4123-ad02-09e81511e528",
+      "title": "azacan Recommendation 3",
+      "author": "Author 3",
+      "description": "This is a premium book result for your interest in \"azacan\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "azacan",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:35.761Z"
+    },
+    {
+      "id": "ec69733c-b751-485b-88bf-c94dbc47cade",
+      "title": "azacan Recommendation 4",
+      "author": "Author 4",
+      "description": "This is a premium book result for your interest in \"azacan\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "azacan",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:35.761Z"
+    },
+    {
+      "id": "d3cbee93-3bdc-411f-b4ce-9f13b1da7739",
+      "title": "azacan Recommendation 5",
+      "author": "Author 5",
+      "description": "This is a premium book result for your interest in \"azacan\". It covers key concepts and provides deep insights into the subject matter.",
+      "query": "azacan",
+      "userId": "1",
+      "recommendationDate": "2025-12-29T17:50:35.761Z"
+    },
+    {
+      "id": "be33c997-7f59-416f-9336-d2e8361ed970",
+      "title": "CAMILO JOSÉ CELA",
+      "author": "CAMILO JOSÉ CELA",
+      "description": "This book is a direct match to the customer's request, as it features the author's work in its title and description.",
+      "query": "Camilo Jose Cela",
+      "userId": "1",
+      "recommendationDate": "2026-01-05T10:16:58.327Z"
+    },
+    {
+      "id": "7fd4434e-2693-4a73-baa3-75a7451b629f",
+      "title": "CAMILO JOSÉ CELA",
+      "author": "CAMILO JOSÉ CELA",
+      "description": "Another direct match, this book also features the author's work and is part of a collection titled \"Obras Completas\", indicating it may be a comprehensive collection of his works.",
+      "query": "Camilo Jose Cela",
+      "userId": "1",
+      "recommendationDate": "2026-01-05T10:16:58.328Z"
+    },
+    {
+      "id": "e15e3696-f826-4cbb-80fb-9653a68e5d44",
+      "title": "CAMILO JOSÉ CELA",
+      "author": "CAMILO JOSÉ CELA",
+      "description": "This third match shares similarities with the previous two, featuring the author's name in its title and description. It is also part of the \"Obras Completas\" collection, suggesting it may be a valuable resource for those interested in his work.",
+      "query": "Camilo Jose Cela",
+      "userId": "1",
+      "recommendationDate": "2026-01-05T10:16:58.328Z"
+    },
+    {
+      "id": "6a1732f0-24f5-45d0-a6ab-546d6b71402f",
+      "title": "El CAMINO DE SANTIAGO. POR LA RUTA DE SAN MIGUEL. CAMINO FRANCÉS",
+      "author": "Unknown Author",
+      "description": "Although not directly written by Camilo José Cela, this book is related to the author's interests and explores the pilgrimage route of Santiago de Compostela.",
+      "query": "Camilo Jose Cela",
+      "userId": "1",
+      "recommendationDate": "2026-01-05T10:16:58.328Z"
+    },
+    {
+      "id": "ced1e211-4307-46c3-814e-780c9a7aa1fc",
+      "title": "El CAMINO DE SANTIAGO. SENTIDO, RUTAS E HITOS",
+      "author": "LUIS GRAU LOBO",
+      "description": "Similar to the previous recommendation, this book also relates to the Camino de Santiago and may be of interest to those who appreciate Camilo José Cela's work.",
+      "query": "Camilo Jose Cela",
+      "userId": "1",
+      "recommendationDate": "2026-01-05T10:16:58.328Z"
+    },
+    {
+      "id": "87da6c17-4a0a-4a2f-b8a4-bb55632e61a2",
+      "title": "SOLITARIO DE AMOR",
+      "author": "CRISTINA PERI ROSSI",
+      "description": "This book directly matches the request \"amor\" as its title and description emphasize a novel of love, exploring how a woman feels when loved and rejected in society.",
+      "query": "amor",
+      "userId": "1",
+      "recommendationDate": "2026-01-09T09:59:55.297Z"
+    },
+    {
+      "id": "2c3b5275-3aab-4f87-8c20-235ba2d59731",
+      "title": "ESE ELIXIR LLAMADO AMOR",
+      "author": "RAMTHA",
+      "description": "The title translates to \"This Elixir Called Love\", directly addressing the customer's query. This book also explores the paradox of love, attraction, and magic, making it a relevant match.",
+      "query": "amor",
+      "userId": "1",
+      "recommendationDate": "2026-01-09T09:59:55.297Z"
+    },
+    {
+      "id": "95da5a7c-a396-4e39-960b-d268c18c9bb3",
+      "title": "VIDA EN EL AMOR",
+      "author": "ERNESTO CARDENAL",
+      "description": "This book focuses on the idea that love is the fundamental law of life and creation, which aligns with the customer's interest in \"amor\". The book offers a mystical and spiritual perspective on love as the center of existence.",
+      "query": "amor",
+      "userId": "1",
+      "recommendationDate": "2026-01-09T09:59:55.298Z"
+    },
+    {
+      "id": "896aba62-d625-48bc-bad4-a3b577292de0",
+      "title": "DE AMOR Y DE SOMBRA",
+      "author": "ISABEL ALLENDE",
+      "description": "Although not directly translated to English, the title suggests an exploration of both love and darkness. Isabel Allende's works often delve into themes of love, relationships, and human nature, making this book a potential match.",
+      "query": "amor",
+      "userId": "1",
+      "recommendationDate": "2026-01-09T09:59:55.298Z"
+    },
+    {
+      "id": "e5572fbd-44f2-4e97-809e-187e583f0978",
+      "title": "EL AMOR EN OCCIDENTE",
+      "author": "JACQUES SOLÉ",
+      "description": "This book provides a historical perspective on the concept of love in Western society during the Modern Age. While not as direct a match as others, it still explores the idea of \"amor\" within a specific cultural context.",
+      "query": "amor",
+      "userId": "1",
+      "recommendationDate": "2026-01-09T09:59:55.298Z"
+    },
+    {
+      "id": "e5d9cbe7-9d11-4f02-b500-720b495b0d6f",
+      "title": "CAMILO JOSÉ CELA",
+      "author": "CAMILO JOSÉ CELA",
+      "description": "This book is a direct match to the customer's request as it features Camilo José Cela as both author and title.",
+      "query": "Camilo Jose Cela",
+      "userId": "50c4",
+      "recommendationDate": "2026-02-10T12:43:54.848Z"
+    },
+    {
+      "id": "50fe74b3-8282-49d3-b71c-66c0b12c1ce6",
+      "title": "CAMILO JOSÉ CELA",
+      "author": "CAMILO JOSÉ CELA",
+      "description": "Similar to the previous recommendation, this book also directly matches the query with Camilo José Cela as both title and author. The edition features his work \"Nuevo viaje a La Alcarria\".",
+      "query": "Camilo Jose Cela",
+      "userId": "50c4",
+      "recommendationDate": "2026-02-10T12:43:54.848Z"
+    },
+    {
+      "id": "836489bc-870d-4361-92fa-1924573364ce",
+      "title": "EL CAMINO DE SANTIAGO. POR LA RUTA DE SAN MIGUEL. CAMINO FRANCÉS",
+      "author": "Unknown Author",
+      "description": "Although the author is unknown, this book features Camilo José Cela's work in its title and content, as it discusses his journey on the Camino de Santiago.",
+      "query": "Camilo Jose Cela",
+      "userId": "50c4",
+      "recommendationDate": "2026-02-10T12:43:54.848Z"
+    },
+    {
+      "id": "720c3e7c-6284-4d74-bc07-37b62dc6ee24",
+      "title": "CAMILO JOSÉ CELA",
+      "author": "CAMILO JOSÉ CELA",
+      "description": "This edition of Camilo José Cela's works includes three of his notable writings: Cuaderno del Guadarrama, Ávila y Judíos, moros y cristianos. It is a great choice for readers interested in exploring the author's work.",
+      "query": "Camilo Jose Cela",
+      "userId": "50c4",
+      "recommendationDate": "2026-02-10T12:43:54.848Z"
+    },
+    {
+      "id": "689ec9ec-fa22-429b-bb83-bcddf88b283b",
+      "title": "CAMILO JOSÉ CELA",
+      "author": "CAMILO JOSÉ CELA",
+      "description": "This book is a collection of works by Camilo José Cela, making it a direct match for the customer's request.",
+      "query": "Camilo Jose Cela",
+      "userId": "50c4",
+      "recommendationDate": "2026-02-10T12:45:31.645Z"
+    },
+    {
+      "id": "13019313-12d0-4dbc-8b01-c494242ff0b3",
+      "title": "CAMILIO JOSÉ CELA",
+      "author": "CAMILO JOSÉ CELA",
+      "description": "Similar to the previous recommendation, this book is also a collection of works by Camilo José Cela, ensuring that it meets the customer's query.",
+      "query": "Camilo Jose Cela",
+      "userId": "50c4",
+      "recommendationDate": "2026-02-10T12:45:31.646Z"
+    },
+    {
+      "id": "3cafaf7d-5b61-4871-af84-0873a1c69be9",
+      "title": "NUEVO VIAJE A LA ALCARRIA",
+      "author": "CAMILO JOSÉ CELA",
+      "description": "As part of the \"Obras Completas\" series, this book is a significant work by Camilo José Cela, making it a relevant recommendation for customers interested in his writings.",
+      "query": "Camilo Jose Cela",
+      "userId": "50c4",
+      "recommendationDate": "2026-02-10T12:45:31.646Z"
+    },
+    {
+      "id": "cace31b1-cafe-4b5e-877e-5a19b8d53ffd",
+      "title": "CUADERNO DEL GUADARRAMA, ÁVILA Y JUDÍOS, MOROS Y CRISTIANOS",
+      "author": "CAMILO JOSÉ CELA",
+      "description": "This book includes three of Camilo José Cela's notable works, further solidifying its relevance to the customer's request.",
+      "query": "Camilo Jose Cela",
+      "userId": "50c4",
+      "recommendationDate": "2026-02-10T12:45:31.647Z"
+    },
+    {
+      "id": "2e65895b-054e-4e04-b750-393d06964c34",
+      "title": "HACIA LA FUNDACION",
+      "author": "ISAAC ASIMOV",
+      "description": "As a renowned science fiction author, Isaac Asimov is often associated with the genre. This book's description suggests it may be part of his Foundation series, which is a cornerstone of science fiction literature.",
+      "query": "science fiction",
+      "userId": "50c4",
+      "recommendationDate": "2026-02-10T12:47:41.918Z"
+    },
+    {
+      "id": "219ff04e-bb6f-4610-b60a-cefe82757c36",
+      "title": "LOS PREMIOS HUGO 1970-1972",
+      "author": "VARIOS AUTORES",
+      "description": "The mention of \"Premios Hugo\" in the title indicates that this book contains science fiction works. The Premios Hugo are awards given to outstanding science fiction and fantasy works, making this collection likely to contain science fiction stories.",
+      "query": "science fiction",
+      "userId": "50c4",
+      "recommendationDate": "2026-02-10T12:47:41.918Z"
+    },
+    {
+      "id": "3ec77fff-600e-444a-9da4-6ac2fee754c5",
+      "title": "MARTÍ BIÓGRAFO",
+      "author": "VARIOS AUTORES",
+      "description": "Although the title doesn't explicitly mention Mars, it includes \"Marti\" which is likely referring to José Martí, a Cuban national hero who wrote about exploration and travel. The subtitle suggests that the book discusses historical discourse related to exploration.",
+      "query": "Mars exploration",
+      "userId": "2",
+      "recommendationDate": "2026-02-10T17:10:11.433Z"
+    },
+    {
+      "id": "5a4b0615-e639-4cd8-bf5e-1756e79c4536",
+      "title": "VISITOR FROM ANOTHER PLANET",
+      "author": "GEORGE P. McCALLUM",
+      "description": "This book's title suggests a connection to extraterrestrial life, which could be related to Mars exploration as humans often explore other planets for signs of life.",
+      "query": "Mars exploration",
+      "userId": "2",
+      "recommendationDate": "2026-02-10T17:10:11.432Z"
+    },
+    {
+      "id": "8cf7396c-1328-4e0f-bf8c-8693c2733b22",
+      "title": "EL SAHARA. Enciclopedia de la Naturaleza-13",
+      "author": "ADELAIDE CATALISANO Y BRUNO MASSA",
+      "description": "While this book is primarily about the Sahara desert, it's part of an encyclopedia series that covers various aspects of nature. This could be relevant to Mars exploration as scientists study the Martian terrain and geology.",
+      "query": "Mars exploration",
+      "userId": "2",
+      "recommendationDate": "2026-02-10T17:10:11.433Z"
+    },
+    {
+      "id": "8ef12c0d-a02d-4718-85d7-fd7146cf264d",
+      "title": "VIAJAR PERDIENDO EL SUR",
+      "author": "RODRIGO FERNÁNDEZ MIRANDA",
+      "description": "Although this book's title doesn't directly relate to space or Mars, it discusses tourism and globalization. This could be tangentially related to the idea of humans exploring other planets as a form of \"tourism\" in space.",
+      "query": "Mars exploration",
+      "userId": "2",
+      "recommendationDate": "2026-02-10T17:10:11.433Z"
+    },
+    {
+      "id": "380f725f-e560-45c6-800b-7775653adf82",
+      "title": "EL YOGA Y LA TRADICIÓN HINDÚ",
+      "author": "JEAN VARENNE",
+      "description": "This book is a comprehensive introduction to yoga and its roots in Hindu tradition, making it a great match for customers interested in learning about the history and philosophy of yoga.",
+      "query": "yoga",
+      "userId": "2",
+      "recommendationDate": "2026-02-11T10:07:37.663Z"
+    },
+    {
+      "id": "0e6b9bfc-543c-43ca-9e37-5d74d0500e70",
+      "title": "MUDRAS. El poder del Yoga en tus manos",
+      "author": "GERTRUD HIRSCHI",
+      "description": "As this book focuses specifically on the practice of mudras (hand gestures) in yoga, it is an excellent choice for customers looking to deepen their understanding and practice of yoga.",
+      "query": "yoga",
+      "userId": "2",
+      "recommendationDate": "2026-02-11T10:07:37.664Z"
+    },
+    {
+      "id": "446c7670-fc05-4c82-8d48-0025481501bf",
+      "title": "YOGA EN CASA",
+      "author": "VARIOS AUTORES",
+      "description": "With its practical approach to practicing yoga at home, this book is perfect for customers looking for accessible and convenient ways to incorporate yoga into their daily lives.",
+      "query": "yoga",
+      "userId": "2",
+      "recommendationDate": "2026-02-11T10:07:37.665Z"
+    },
+    {
+      "id": "8fa85b12-fb35-45a8-9944-e47739cb6cd7",
+      "title": "LÁ TRADICIÓN DEL YOGA",
+      "author": "GEORG FEUERSTEIN",
+      "description": "This extensive volume explores the history, literature, philosophy, and practice of yoga, making it a valuable resource for customers seeking a thorough understanding of yoga's evolution and development over time.",
+      "query": "yoga",
+      "userId": "2",
+      "recommendationDate": "2026-02-11T10:07:37.665Z"
+    },
+    {
+      "id": "77e521cf-a083-4f59-82ba-6502d6bd15b1",
+      "title": "SOLITARIO DE AMOR",
+      "author": "CRISTINA PERI ROSSI",
+      "description": "Ediciones Grijalbo, S.A. Barcelona. 1988. 13,2 X 20 cm. 185pp. Rústica. En buen estado de conservación.Con una ligera firma con lapicero. Novela de amor , que narra como se siente una mujer amada y como el amor puede a llegar a ser amante y como se ve rechazada en la sociedad.",
+      "query": "amor",
+      "userId": "2",
+      "recommendationDate": "2026-02-11T11:47:16.491Z"
+    },
+    {
+      "id": "231ef595-fb4c-4656-a554-2ae89e194cc5",
+      "title": "ESE ELIXIR LLAMADO AMOR",
+      "author": "RAMTHA",
+      "description": "Arkano Books, 2004, Madrid, Rústica con solapa, .23x15 cm, 245 pp. Muy buen estado. Libro que tratar de explorar la paradoja del amor reflexionando sobre la verdad de la atracción sexual, las fantasías secretas y la magia del amor verdadero.",
+      "query": "amor",
+      "userId": "2",
+      "recommendationDate": "2026-02-11T11:47:16.491Z"
+    },
+    {
+      "id": "d1241a02-4dc7-41bd-95e2-98d1a40c7399",
+      "title": "EL AMOR EN OCCIDENTE",
+      "author": "JACQUES SOLÉ",
+      "description": "Librería Editorial Argos, Barcelona 1977. 363 pp, 20x13. Tapa blanda, señales paso del tiempo, buen estado. Es un repaso al amor en Occidente durante la Edad Moderna.",
+      "query": "amor",
+      "userId": "2",
+      "recommendationDate": "2026-02-11T11:47:16.491Z"
+    },
+    {
+      "id": "8ab9533d-2026-4f8d-b1f6-c157be1486f3",
+      "title": "DE AMOR Y DE SOMBRA",
+      "author": "ISABEL ALLENDE",
+      "description": "Editorial Plaza y Janés S.A. 1995, Barcelóna. Rústico con solapa. 267 pp. 15X21,5. Buen estado.",
+      "query": "amor",
+      "userId": "2",
+      "recommendationDate": "2026-02-11T11:47:16.491Z"
+    },
+    {
+      "id": "8b90639a-5cf2-468b-b575-f124ca6e8478",
+      "title": "VIDA EN EL AMOR",
+      "author": "ERNESTO CARDENAL",
+      "description": "Ediciones Sigueme. 1979. Salamanca. 169pp. 11,8x17,2cm. Cartoné. En buen estado de conservación.  Escrito por Ernesto Cardenal, este libro aborda la idea de que el amor es la ley fundamental de la vida y la creación. Cardenal, un poeta y sacerdote nicaragüense, ofrece una visión mística y espiritual del amor como el centro de la existencia.",
+      "query": "amor",
+      "userId": "2",
+      "recommendationDate": "2026-02-11T11:47:16.491Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "password": "password"
+    },
+    {
+      "id": "2",
+      "name": "Test User",
+      "email": "test@example.com",
+      "password": "London1977@@"
+    },
+    {
+      "id": "50c4"
+    },
+    {
+      "id": "8cb0"
+    },
+    {
+      "id": "ecb2"
+    },
+    {
+      "id": "75cf"
+    }
+  ]
+}

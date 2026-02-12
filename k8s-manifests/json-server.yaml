@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: json-server-service
+  namespace: libro-mind
+spec:
+  selector:
+    app: json-server
+  ports:
+  - port: 3002
+    targetPort: 3002
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: json-server
+  namespace: libro-mind
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: json-server
+  template:
+    metadata:
+      labels:
+        app: json-server
+    spec:
+      initContainers:
+      - name: init-json-data
+        image: busybox
+        command: ['mkdir', '-p', '/app/app/_data']
+        volumeMounts:
+        - name: json-data
+          mountPath: /app
+      containers:
+      - name: json-server
+        image: node:20-slim
+        workingDir: /app
+        command: ["npx", "json-server", "--watch", "app/_data/db.json", "--port", "3002", "--host", "0.0.0.0"]
+        ports:
+        - containerPort: 3002
+        volumeMounts:
+        - name: json-data
+          mountPath: /app
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+      volumes:
+      - name: json-data
+        persistentVolumeClaim:
+          claimName: json-data-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: json-data-pvc
+  namespace: libro-mind
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi

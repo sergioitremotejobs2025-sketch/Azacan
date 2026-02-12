@@ -1,0 +1,76 @@
+services:
+  # PostgreSQL database with pgvector extension
+  db:
+    image: pgvector/pgvector:pg15
+    container_name: libro-mind-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../ecom/init-pgvector.sql:/docker-entrypoint-initdb.d/init-pgvector.sql
+      - ../ecom/book_store_db_backup.sql:/docker-entrypoint-initdb.d/z_book_store_db_backup.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Django Backend
+  backend:
+    build:
+      context: ..
+      dockerfile: docker-compose-app/backend.Dockerfile
+    container_name: libro-mind-backend
+    volumes:
+      - ../ecom:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - POSTGRES_DB=${POSTGRES_DB:-postgres}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Next.js Frontend
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker-compose-app/frontend.Dockerfile
+    container_name: libro-mind-frontend
+    volumes:
+      - ../my-next-app:/app
+      - /app/.next
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+      - JSON_SERVER_URL=http://json-server:3002
+      - BACKEND_API_URL=http://backend:8000
+    depends_on:
+      - backend
+
+  # JSON Server for User Management
+  json-server:
+    image: node:20-slim
+    container_name: libro-mind-json-server
+    working_dir: /app
+    volumes:
+      - ../my-next-app:/app
+    command: npx json-server --watch app/_data/db.json --port 3002 --host 0.0.0.0
+    ports:
+      - "3002:3002"
+
+volumes:
+  postgres_data:
