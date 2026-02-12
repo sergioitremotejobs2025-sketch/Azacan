@@ -1,0 +1,41 @@
+name: Kubernetes Manifests Check
+
+on:
+  push:
+    paths:
+      - 'k8s-manifests/**'
+    branches: [ "main" ]
+  pull_request:
+    paths:
+      - 'k8s-manifests/**'
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Validate Kubernetes Manifests (Dry Run)
+        run: |
+          # Create the namespace so validation doesn't fail on missing namespace
+          kubectl create namespace libro-mind --dry-run=client -o yaml | kubectl apply -f - --dry-run=client
+          
+          # Iterate through all yaml files and validate them
+          for file in k8s-manifests/*.yaml; do
+            echo "Validating $file..."
+            kubectl apply --dry-run=client -f "$file"
+          done
+
+      - name: Scan with Kube-Linter
+        uses: stackrox/kube-linter-action@v1.0.4
+        with:
+          directory: k8s-manifests
+          # Optional: add exclude-checks or include-checks here
