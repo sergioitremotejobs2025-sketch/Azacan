@@ -2,7 +2,7 @@
 
 Based on `PROJECT_IMPROVEMENTS.md`, here is the list of pending tasks for Observability & Monitoring:
 
-- [ ] **Distributed Tracing**
+- [x] **Distributed Tracing**
   - Implement **OpenTelemetry** (with Jaeger or Tempo) to trace requests from the Next.js frontend -> Django backend -> PostgreSQL -> Ollama.
   - *Goal:* Identify latency bottlenecks in the RAG pipeline.
 

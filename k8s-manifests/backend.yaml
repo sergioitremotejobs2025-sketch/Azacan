@@ -39,6 +39,10 @@ spec:
             secretKeyRef:
               name: libro-mind-secrets
               key: POSTGRES_PASSWORD
+        - name: ENABLE_OTEL
+          value: "true"
+        - name: OTEL_SERVICE_NAME
+          value: "django-backend"
         ports:
         - name: http-backend
           containerPort: 8000

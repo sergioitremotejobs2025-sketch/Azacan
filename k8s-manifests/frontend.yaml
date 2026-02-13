@@ -38,6 +38,10 @@ spec:
           value: "http://backend-service:8000"
         - name: JSON_SERVER_URL
           value: "http://json-server-service:3002"
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://jaeger:4317"
+        - name: OTEL_SERVICE_NAME
+          value: "next-frontend"
         ports:
         - name: http-frontend
           containerPort: 3000

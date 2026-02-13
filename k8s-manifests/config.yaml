@@ -24,3 +24,4 @@ data:
   POSTGRES_PORT: "5432"
   OLLAMA_BASE_URL: "http://ollama-service:11434"
   DEBUG: "1"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4317"
