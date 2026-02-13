@@ -13,8 +13,9 @@ Based on `PROJECT_IMPROVEMENTS.md`, here is the list of pending tasks for Backen
     - *Goal:* Broaden the search scope.
     - *Implementation:* Added `expand_query` in `expansion.py` and updated `get_reranked_books` to use it.
 
-- [ ] **Asynchronous Processing**
-  - [ ] Offload heavy tasks (generating vector embeddings for bulk uploads, sending emails) to a task queue.
+- [x] **Asynchronous Processing**
+  - [x] Offload heavy tasks (generating vector embeddings for bulk uploads, sending emails) to a task queue.
+    - *Implementation:* Created `recommendations/tasks.py` for embeddings (triggered by signals) and `store/tasks.py` for emails.
   - [x] Implement **Celery** with **Redis** or **RabbitMQ**.
     - *Implementation:* Added `redis` service to `docker-compose.yml`, configured `celery` in `ecom/celery.py` and `settings.py`.
 
