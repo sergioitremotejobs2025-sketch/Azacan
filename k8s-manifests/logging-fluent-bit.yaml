@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: logging
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd-bit
+  namespace: logging
+  labels:
+    k8s-app: fluentd-bit-logging
+spec:
+  selector:
+    matchLabels:
+      k8s-app: fluentd-bit-logging
+  template:
+    metadata:
+      labels:
+        k8s-app: fluentd-bit-logging
+    spec:
+      containers:
+      - name: fluentd-bit
+        image: fluent/fluent-bit:2.1.8
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+        - name: config
+          mountPath: /fluent-bit/etc/
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+      - name: config
+        configMap:
+          name: fluent-bit-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-config
+  namespace: logging
+  labels:
+    k8s-app: fluentd-bit-logging
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush         1
+        Log_Level     info
+        Daemon        off
+        Parsers_File  parsers.conf
+
+    [INPUT]
+        Name              tail
+        Path              /var/log/containers/*.log
+        Parser            docker
+        Tag               kube.*
+        Refresh_Interval  5
+        Mem_Buf_Limit     5MB
+        Skip_Long_Lines   On
+
+    [OUTPUT]
+        Name            es
+        Match           *
+        Host            elasticsearch
+        Port            9200
+        Logstash_Format On
+        Replace_Dots    On
+        Retry_Limit     False
+
+  parsers.conf: |
+    [PARSER]
+        Name   docker
+        Format json
+        Time_Key time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep    On

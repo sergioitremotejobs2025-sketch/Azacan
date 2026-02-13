@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+  namespace: logging
+  labels:
+    app: elasticsearch
+spec:
+  serviceName: elasticsearch
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
+        ports:
+        - containerPort: 9200
+          name: http
+        - containerPort: 9300
+          name: transport
+        env:
+        - name: discovery.type
+          value: single-node
+        - name: xpack.security.enabled
+          value: "false" # Disabled for simplicity in demo
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  namespace: logging
+  labels:
+    app: elasticsearch
+spec:
+  ports:
+  - port: 9200
+    name: http
+  - port: 9300
+    name: transport
+  selector:
+    app: elasticsearch
