@@ -1,0 +1,19 @@
+# Backend & AI Architecture Tasks
+
+Based on `PROJECT_IMPROVEMENTS.md`, here is the list of pending tasks for Backend & AI Architecture:
+
+- [ ] **Advanced RAG Techniques**
+  - [ ] **Re-ranking:** Implement a cross-encoder model (e.g., `BAAI/bge-reranker`) to re-rank the top-K results from the vector search before sending them to the LLM.
+    - *Goal:* Improve relevance of search results passed to the LLM.
+  - [ ] **HyDE (Hypothetical Document Embeddings):** Generate a hypothetical answer first, embed that, and search against it.
+    - *Goal:* Improve semantic matching for complex queries.
+  - [ ] **Query Expansion:** Use the LLM to generate synonyms or related questions.
+    - *Goal:* Broaden the search scope.
+
+- [ ] **Asynchronous Processing**
+  - [ ] Offload heavy tasks (generating vector embeddings for bulk uploads, sending emails) to a task queue.
+  - [ ] Implement **Celery** with **Redis** or **RabbitMQ**.
+
+- [ ] **API Gateway**
+  - [ ] Introduce an API Gateway (like **Kong** or advanced K8s Ingress definitions).
+  - *Goal:* Handle rate limiting, authentication, and request validation at the edge.
