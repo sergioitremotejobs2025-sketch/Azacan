@@ -21,14 +21,17 @@ This document outlines potential areas for enhancement to elevate the project's 
 
 ## 2. Observability & Monitoring
 
-- **Distributed Tracing:**
+- **Distributed Tracing:** [COMPLETED]
   - Implement **OpenTelemetry** (with Jaeger or Tempo) to trace requests from the Next.js frontend -> Django backend -> PostgreSQL -> Ollama. This helps identify latency bottlenecks in the RAG pipeline.
+  - *Implementation:* Created `k8s-manifests/jaeger.yaml` and verified instrumentation.
 
-- **Metrics & Dashboards:**
+- **Metrics & Dashboards:** [COMPLETED]
   - Deploy **Prometheus** and **Grafana** to visualize cluster health, request rates, and custom application metrics (e.g., "AI generation time", "Cache hit ratio", "Vector search latency").
+  - *Implementation:* Created `k8s-manifests/prometheus.yaml` (metrics scraping) and `k8s-manifests/grafana.yaml` (visualization).
 
-- **Centralized Logging:**
+- **Centralized Logging:** [COMPLETED]
   - Set up **Fluentd** or **Elasticstack (ELK)** to aggregate logs from all pods, making debugging easier than running `kubectl logs` manually.
+  - *Implementation:* Created `k8s-manifests/fluentd.yaml`.
 
 ## 3. Backend & AI Architecture
 
@@ -45,22 +48,28 @@ This document outlines potential areas for enhancement to elevate the project's 
 
 ## 4. Frontend & User Experience
 
-- **End-to-End (E2E) Testing:**
+- **End-to-End (E2E) Testing:** [COMPLETED]
   - Add **Playwright** or **Cypress** tests to verify critical user flows (e.g., "Search for a book -> Add to Cart -> Checkout") automatically in the CI/CD pipeline.
+  - *Implementation:* Added Playwright tests in `my-next-app/e2e/`.
 
-- **Optimistic UI Updates:**
+- **Optimistic UI Updates:** [COMPLETED]
   - Implement optimistic updates in React Query/SWR for the "Add to Cart" action to make the interface feel instantly responsive, dealing with errors in the background.
+  - *Implementation:* Implemented `useCart` hook and `AddToCartButton` with optimistic updates.
 
-- **Feedback Loop Integration:**
+- **Feedback Loop Integration:** [COMPLETED]
   - Add a "Thumbs Up/Down" mechanism for AI recommendations. Log this feedback to the database to evaluate model performance and potentially fine-tune future models (RLHF groundwork).
+  - *Implementation:* Added feedback backend model/API and frontend components.
 
 ## 5. Security
 
-- **Secrets Management:**
+- **Secrets Management:** [COMPLETED]
   - Migrate from standard Kubernetes Secrets to an external manager like **Google Secret Manager** or **HashiCorp Vault**, injected via CSI drivers for better security and rotation capabilities.
+  - *Implementation:* Created `k8s-manifests/external-secrets.yaml` for External Secrets Operator.
 
-- **Network Policies:**
+- **Network Policies:** [COMPLETED]
   - Define Kubernetes `NetworkPolicies` to strictly limit communication (e.g., only the Backend can talk to the Database; Frontend cannot talk directly to the Database).
+  - *Implementation:* Created `k8s-manifests/network-policies.yaml` implementing default deny and specific allows.
 
-- **Container Security Scanning:**
+- **Container Security Scanning:** [COMPLETED]
   - Implement **Trivy** or **Grype** in the CI pipeline to scan Docker images for vulnerabilities (CVEs) before deployment.
+  - *Implementation:* Updated `.github/workflows/google.yml` to include Trivy image scan. `k8s-security.yml` already handles IaC scanning.
