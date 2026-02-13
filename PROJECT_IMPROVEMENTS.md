@@ -76,3 +76,18 @@ This document outlines potential areas for enhancement to elevate the project's 
 - **Container Security Scanning:** [COMPLETED]
   - Implement **Trivy** or **Grype** in the CI pipeline to scan Docker images for vulnerabilities (CVEs) before deployment.
   - *Implementation:* Updated `.github/workflows/google.yml` to include Trivy image scan. `k8s-security.yml` already handles IaC scanning.
+
+## 6. Maintenance & Operational Reliability
+
+- **Auto-Eviction Safeguards (GKE Autopilot):** [COMPLETED]
+  - Configure PVC mounts for all model-downloading initContainers to bypass strict ephemeral storage limits (1Gi) on Autopilot.
+  - *Implementation:* Updated `ollama.yaml` with data volume persistence for model pulls.
+
+- **AI-Native Health Probes:** [COMPLETED]
+  - Fine-tune liveness/readiness probes to account for the heavy RAM-loading phase of BERT and Cross-Encoder models.
+  - *Implementation:* Increased `initialDelaySeconds` and resource bounds in `backend.yaml`.
+
+- **High-Patience API Gateway:** [COMPLETED]
+  - Extended Ingress timeouts to 300s to support slow-but-accurate RAG inference on shared CPU clusters.
+  - *Implementation:* Added `proxy-read-timeout` and `proxy-send-timeout` annotations to `api-gateway-ingress.yaml`.
+

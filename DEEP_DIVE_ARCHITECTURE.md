@@ -94,6 +94,25 @@ The core value of Libro-Mind is its AI-powered book recommendations. Today, we m
 
 ---
 
+## 6. Operational Resilience: "Day 2" at Scale
+
+### **A. GKE Autopilot Adaptation**
+Deploying AI models on GKE Autopilot presented unique challenges. Standard pods were being evicted due to the **1Gi ephemeral storage limit** during model pulls. 
+*   **Solution:** We transitioned to using **Persistent Volume Claims (PVCs)** for both the `initContainer` and the main `ollama` container. 
+*   **Result:** Model updates are now deterministic and don't rely on volatile local disk space.
+
+### **B. Large-Model Liveness/Readiness**
+AI models require a "warm-up" phase to move weights from disk to RAM. 
+*   **Solution:** We fine-tuned the `readinessProbe` with a **300-second Initial Delay**. 
+*   **Result:** This prevents Kubernetes from "killing" the pod during its resource-heavy initialization, ensuring a smooth rolling update.
+
+### **C. AI Inference Timeouts**
+CPU-based inference creates long-tail latency. 
+*   **Solution:** We injected Nginx annotations (`proxy-read-timeout`) to extend the gateway's patience to 5 minutes.
+*   **Result:** Elimination of `504 Gateway Timeout` errors for complex RAG queries.
+
+---
+
 ## Final Vision: The Production Loop
 
 Every implementation today was designed to support a continuous loop of improvement:

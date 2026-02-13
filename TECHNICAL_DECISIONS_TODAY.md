@@ -104,6 +104,29 @@ This document provides a comprehensive overview of the architectural enhancement
 
 ---
 
+## 6. Production Stability & Hardening for AI
+
+### **AI-Aware Readiness Probes & Resources**
+*   **Decision:** Significantly increased resource limits and probe delays for the backend.
+*   **Rationale:** AI models (SentenceTransformers/Cross-Encoders) are heavy. Standard K8s probes fail during the 1-2 minute "warm-up" period where models are loaded into RAM.
+*   **Implementation:** 
+    *   Set `initialDelaySeconds` to **300s** in `backend.yaml`.
+    *   Increased memory and CPU limits to prevent OOM kills during peak inference.
+
+### **GKE Autopilot Storage Management**
+*   **Decision:** Persistent volume mounts in InitContainers.
+*   **Rationale:** GKE Autopilot restricts ephemeral storage (1Gi). Pulling LLM models (DeepSeek-R1 is ~1.1GB) triggers immediate pod eviction.
+*   **Implementation:** Mounted the `ollama-data-pvc` into the `pull-model` initContainer in `ollama.yaml`.
+*   **Impact:** Stable model downloads that don't depend on volatile ephemeral disk space.
+
+### **Latency-Resilient Ingress**
+*   **Decision:** Configured high-latency timeouts at the Nginx Ingress level.
+*   **Rationale:** Local LLM inference on CPU can take 30-60+ seconds. Standard 60s timeouts cause frequent `504 Gateway Time-out` errors.
+*   **Implementation:** Added `proxy-read-timeout: "300"` annotations to `api-gateway-ingress.yaml`.
+*   **Impact:** Reliable user experience even during high-load inference periods.
+
+---
+
 ## Summary Diagram (Logical Flow)
 
 ```mermaid
