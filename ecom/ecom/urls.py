@@ -33,6 +33,7 @@ urlpatterns = [
     path('recommendations/', include('recommendations.urls')),
     path('api/', include('recommendations.api.urls')),
     path('graphql/', GraphQLView.as_view(graphiql=True)),
+    path('prometheus/', include('django_prometheus.urls')),
 ]
 
 if settings.DEBUG:

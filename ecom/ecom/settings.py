@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'graphene_django', 
     'corsheaders',
+    'django_prometheus',
 ]
 
 # === STATIC FILES - MUST BE EXACTLY LIKE THIS ===
@@ -54,6 +55,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -63,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 # Development CORS (tighten in production!)
