@@ -30,7 +30,8 @@ const fetchRecommendationsFromDjango = async (query: string, userId: string): Pr
             query: query,
             userId: userId,
             recommendationDate: new Date().toISOString(),
-            productId: rec.product_id || rec.productId
+            productId: rec.product_id || rec.productId,
+            originalId: rec.id // Store the backend recommendation ID
         }));
     } catch (error) {
         console.error("Error fetching from Django API:", error);

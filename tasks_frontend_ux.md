@@ -12,6 +12,7 @@ Based on `PROJECT_IMPROVEMENTS.md`, here is the list of pending tasks for Fronte
     - *Implementation:* Added `QueryProvider`, `useCart` hook (react-query), `AddToCartButton.tsx` (optimistic mutation), `CartIndicator.tsx` (live count), and integrated into `BookGrid` and `NavBar`.
   - *Goal:* Make the interface feel instantly responsive.
 
-- [ ] **Feedback Loop Integration**
-  - [ ] Add a "Thumbs Up/Down" mechanism for AI recommendations.
+- [x] **Feedback Loop Integration**
+  - [x] Add a "Thumbs Up/Down" mechanism for AI recommendations.
   - *Goal:* Log feedback to evaluate model performance and potentially fine-tune future models.
+  - *Implementation:* Created `RecommendationFeedback` model and API endpoint in backend. Created `FeedbackButton.tsx` component and mapped backend `originalId` in frontend to enable submission. Integrated into `BookGrid`.

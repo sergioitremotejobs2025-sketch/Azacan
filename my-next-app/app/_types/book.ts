@@ -7,4 +7,5 @@ export interface BookRecommendation {
     userId: string;
     recommendationDate: string;
     productId?: number;
+    originalId?: number; // Backend Book ID for feedback
 }

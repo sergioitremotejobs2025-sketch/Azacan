@@ -45,3 +45,19 @@ class SearchQueryCache(models.Model):
 
     def __str__(self):
         return self.query
+
+class RecommendationFeedback(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    query = models.CharField(max_length=255, blank=True, null=True) # Context: What did they search for?
+    is_positive = models.BooleanField() # True = Thumbs Up, False = Thumbs Down
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['user', 'book']),
+        ]
+
+    def __str__(self):
+        verdict = "Positive" if self.is_positive else "Negative"
+        return f"{verdict} feedback for {self.book.title} (User: {self.user})"

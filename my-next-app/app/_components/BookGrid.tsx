@@ -5,6 +5,7 @@ import { FiBook, FiEye, FiUser, FiCalendar } from "react-icons/fi";
 import DeleteButton from "./DeleteButton";
 import { deleteBookAction } from "../actions/book";
 import AddToCartButton from "./AddToCartButton";
+import FeedbackButton from "./FeedbackButton";
 
 export default function BookGrid({ books, backendUrl }: { books: BookRecommendation[], backendUrl?: string }) {
     return (
@@ -43,7 +44,15 @@ export default function BookGrid({ books, backendUrl }: { books: BookRecommendat
                                 <FiCalendar className="text-blue-500" />
                                 <span>{new Date(book.recommendationDate).toLocaleDateString()}</span>
                             </div>
-                            <span className="text-blue-600/50">#{book.query}</span>
+
+                            <div className="flex items-center gap-2">
+                                {book.originalId && (
+                                    <div className="mr-2">
+                                        <FeedbackButton bookId={book.originalId} query={book.query} />
+                                    </div>
+                                )}
+                                <span className="text-blue-600/50">#{book.query}</span>
+                            </div>
                         </div>
 
                         <div className="flex flex-col gap-3">
