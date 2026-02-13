@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FiBook, FiEye, FiUser, FiCalendar } from "react-icons/fi";
 import DeleteButton from "./DeleteButton";
 import { deleteBookAction } from "../actions/book";
+import AddToCartButton from "./AddToCartButton";
 
 export default function BookGrid({ books, backendUrl }: { books: BookRecommendation[], backendUrl?: string }) {
     return (
@@ -62,15 +63,24 @@ export default function BookGrid({ books, backendUrl }: { books: BookRecommendat
                             </div>
 
                             {book.productId && (
-                                <a
-                                    href={`${backendUrl || "http://localhost:8000"}/product/${book.productId}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center justify-center gap-2 py-3 rounded-2xl bg-blue-50 text-blue-600 font-bold hover:bg-blue-100 transition-all active:scale-95 border border-blue-100 text-sm"
-                                >
-                                    <FiBook size={16} />
-                                    <span>View in Backend</span>
-                                </a>
+                                <div className="flex gap-2">
+                                    <div className="flex-1">
+                                        <AddToCartButton
+                                            productId={book.productId}
+                                            productName={book.title}
+                                        // price not available on BookRecommendation directly, assuming 0 for optimistic total update
+                                        />
+                                    </div>
+                                    <a
+                                        href={`${backendUrl || "http://localhost:8000"}/product/${book.productId}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center justify-center p-3 rounded-2xl bg-gray-50 text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all border border-gray-100"
+                                        title="View Details"
+                                    >
+                                        <FiEye size={20} />
+                                    </a>
+                                </div>
                             )}
                         </div>
                     </div>

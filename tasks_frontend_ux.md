@@ -2,12 +2,14 @@
 
 Based on `PROJECT_IMPROVEMENTS.md`, here is the list of pending tasks for Frontend & User Experience:
 
-- [ ] **End-to-End (E2E) Testing**
-  - [ ] Add **Playwright** or **Cypress** tests to verify critical user flows.
+- [x] **End-to-End (E2E) Testing**
+  - [x] Add **Playwright** or **Cypress** tests to verify critical user flows.
   - *Goal:* Verify "Search for a book -> Add to Cart -> Checkout" automatically in the CI/CD pipeline.
+  - *Implementation:* Added Playwright setup, config, and basic tests in `my-next-app/e2e/` (Auth, Search, Home). Added `test:e2e` script to `package.json`.
 
-- [ ] **Optimistic UI Updates**
-  - [ ] Implement optimistic updates in React Query/SWR for the "Add to Cart" action.
+- [x] **Optimistic UI Updates**
+  - [x] Implement optimistic updates in React Query/SWR for the "Add to Cart" action.
+    - *Implementation:* Added `QueryProvider`, `useCart` hook (react-query), `AddToCartButton.tsx` (optimistic mutation), `CartIndicator.tsx` (live count), and integrated into `BookGrid` and `NavBar`.
   - *Goal:* Make the interface feel instantly responsive.
 
 - [ ] **Feedback Loop Integration**

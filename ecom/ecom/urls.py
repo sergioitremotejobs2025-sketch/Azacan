@@ -32,6 +32,7 @@ urlpatterns = [
     path('payment/', include('payment.urls')),
     path('recommendations/', include('recommendations.urls')),
     path('api/', include('recommendations.api.urls')),
+    path('api/cart/', include('cart.api.urls')),  # New API cart endpoint
     path('graphql/', GraphQLView.as_view(graphiql=True)),
     path('prometheus/', include('django_prometheus.urls')),
 ]

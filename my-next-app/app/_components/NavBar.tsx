@@ -2,6 +2,7 @@ import Link from "next/link";
 import React from "react";
 import LogoutButton from "./LogoutButton";
 import { getSession } from "../_lib/session";
+import CartIndicator from "./CartIndicator";
 
 
 const NavBar = async () => {
@@ -18,6 +19,7 @@ const NavBar = async () => {
                         <Link href="/books" className="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors uppercase tracking-widest">
                             My Library
                         </Link>
+                        <CartIndicator />
                         <LogoutButton />
                     </div>
                 ) : (
