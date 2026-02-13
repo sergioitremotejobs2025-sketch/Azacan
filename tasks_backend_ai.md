@@ -3,10 +3,12 @@
 Based on `PROJECT_IMPROVEMENTS.md`, here is the list of pending tasks for Backend & AI Architecture:
 
 - [ ] **Advanced RAG Techniques**
-  - [ ] **Re-ranking:** Implement a cross-encoder model (e.g., `BAAI/bge-reranker`) to re-rank the top-K results from the vector search before sending them to the LLM.
+  - [x] **Re-ranking:** Implement a cross-encoder model (e.g., `BAAI/bge-reranker` or `cross-encoder/ms-marco-MiniLM-L-6-v2`) to re-rank the top-K results from the vector search before sending them to the LLM.
     - *Goal:* Improve relevance of search results passed to the LLM.
-  - [ ] **HyDE (Hypothetical Document Embeddings):** Generate a hypothetical answer first, embed that, and search against it.
+    - *Implementation:* Added `CrossEncoder` to `rag.py` and updated `get_recommendations_by_query` to re-rank candidates.
+  - [x] **HyDE (Hypothetical Document Embeddings):** Generate a hypothetical answer first, embed that, and search against it.
     - *Goal:* Improve semantic matching for complex queries.
+    - *Implementation:* Added `generate_hyde_embedding` in `hyde.py` and updated `search_books` to use it.
   - [ ] **Query Expansion:** Use the LLM to generate synonyms or related questions.
     - *Goal:* Broaden the search scope.
 

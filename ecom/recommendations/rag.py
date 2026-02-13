@@ -456,8 +456,8 @@ def search_books(query: str, top_k: int = 5):
     Returns: QuerySet of Book objects
     """
     try:
-        model = get_sentence_transformer_model()
-        query_embedding = model.encode(query).tolist()
+        from recommendations.hyde import generate_hyde_embedding
+        query_embedding = generate_hyde_embedding(query)
         
         similar_books = (
             Book.objects.annotate(distance=CosineDistance('embedding', query_embedding))
