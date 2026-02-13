@@ -1,0 +1,34 @@
+
+namespace: libro-mind
+
+global:
+  environment: production
+
+ingress:
+  enabled: true
+  host: "" # Use LoadBalancer IP
+  cors: true
+
+frontend:
+  replicaCount: 2
+  image:
+    repository: us-central1-docker.pkg.dev/libromind-sergio-1770983773/libro-mind/frontend
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: NodePort
+    port: 3000
+
+backend:
+  replicaCount: 2
+  image:
+    repository: us-central1-docker.pkg.dev/libromind-sergio-1770983773/libro-mind/backend
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 8000
+  env:
+    POSTGRES_HOST: "db-service"
+    POSTGRES_PORT: "5432"
+    OLLAMA_BASE_URL: "http://ollama-service:11434"
