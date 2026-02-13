@@ -39,14 +39,14 @@ on:
       - main
 
 env:
-  PROJECT_ID: 'my-project' # TODO: update to your Google Cloud project ID
-  GAR_LOCATION: 'us-central1' # TODO: update to your region
-  GKE_CLUSTER: 'cluster-1' # TODO: update to your cluster name
-  GKE_ZONE: 'us-central1-c' # TODO: update to your cluster zone
-  DEPLOYMENT_NAME: 'gke-test' # TODO: update to your deployment name
-  REPOSITORY: 'samples' # TODO: update to your Artifact Registry docker repository name
-  IMAGE: 'static-site'
-  WORKLOAD_IDENTITY_PROVIDER: 'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider' # TODO: update to your workload identity provider
+  PROJECT_ID: 'ecom-book-app-2026'
+  GAR_LOCATION: 'us-central1'
+  GKE_CLUSTER: 'libro-mind-cluster'
+  GKE_ZONE: 'us-central1-a'
+  DEPLOYMENT_NAME: 'libro-mind'
+  REPOSITORY: 'libro-mind'
+  IMAGE: 'backend'
+  WORKLOAD_IDENTITY_PROVIDER: 'projects/ecom-book-app-2026/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
 
 jobs:
   setup-build-publish-deploy:

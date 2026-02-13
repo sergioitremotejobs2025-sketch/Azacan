@@ -1,6 +1,7 @@
 variable "project_id" {
   description = "The GCP Project ID where resources will be deployed."
   type        = string
+  default     = "ecom-book-app-2026"
 }
 
 variable "region" {
