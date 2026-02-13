@@ -19,6 +19,7 @@ Based on `PROJECT_IMPROVEMENTS.md`, here is the list of pending tasks for Backen
   - [x] Implement **Celery** with **Redis** or **RabbitMQ**.
     - *Implementation:* Added `redis` service to `docker-compose.yml`, configured `celery` in `ecom/celery.py` and `settings.py`.
 
-- [ ] **API Gateway**
-  - [ ] Introduce an API Gateway (like **Kong** or advanced K8s Ingress definitions).
+- [x] **API Gateway**
+  - [x] Introduce an API Gateway (like **Kong** or advanced K8s Ingress definitions).
   - *Goal:* Handle rate limiting, authentication, and request validation at the edge.
+  - *Implementation:* Created `k8s-manifests/api-gateway-ingress.yaml` with Nginx Ingress annotations for Rate Limiting (5rps/IP), CORS, and Body Size Limits. Requires `minikube addons enable ingress`.
