@@ -79,3 +79,7 @@ ecom/test_api_endpoints.py
 ecom/test_azacan.py
 ecom/test_rag_query.py
 my-next-app/coverage/
+
+# Istio Binaries
+istio-1.28.3/
+istio-*.tar.gz

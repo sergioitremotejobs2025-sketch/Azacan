@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: json-db-config
+  namespace: libro-mind
+data:
+  db.json: |
+    {
+      "books": [
+        {
+          "id": "7c8ddd4c-3b3c-40cb-bf2d-5708f9fc1b43",
+          "title": "la materia oscura Recommendation 1",
+          "author": "Author 1",
+          "description": "This is a premium book result for your interest in \"la materia oscura\". It covers key concepts and provides deep insights into the subject matter.",
+          "query": "la materia oscura",
+          "userId": "1",
+          "recommendationDate": "2025-12-29T17:49:42.415Z"
+        },
+        {
+          "id": "7d37d88e-387b-42b8-ad3f-c04d47ae951d",
+          "title": "la materia oscura Recommendation 2",
+          "author": "Author 2",
+          "description": "This is a premium book result for your interest in \"la materia oscura\". It covers key concepts and provides deep insights into the subject matter.",
+          "query": "la materia oscura",
+          "userId": "1",
+          "recommendationDate": "2025-12-29T17:49:42.416Z"
+        }
+      ],
+      "users": [
+        {
+          "id": "admin-id",
+          "name": "Admin",
+          "email": "admin@example.com",
+          "password": "admin1234"
+        },
+        {
+          "id": "1",
+          "name": "John Doe",
+          "email": "john@example.com",
+          "password": "password"
+        }
+      ]
+    }

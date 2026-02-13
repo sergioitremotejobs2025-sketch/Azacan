@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from recommendations.models import Book, Purchase
+from recommendations.models import Book, Purchase, SearchQueryCache
 from store.models import Product, Category
-from recommendations.rag import get_recommendations, get_sentence_transformer_model
+from recommendations.rag import get_recommendations, get_sentence_transformer_model, get_recommendations_by_query_stream
 from unittest.mock import patch, MagicMock
 import numpy as np
 import pydantic
@@ -341,3 +341,67 @@ class RAGEdgeCasesTestCase(TestCase):
             
             # Should handle duplicate purchases
             self.assertIsInstance(result, list)
+
+
+class SearchCachingTestCase(TestCase):
+    def test_search_caching(self):
+        """Test that search results are cached using SearchQueryCache"""
+        # Create data to ensure get_similar_books returns something
+        from recommendations.models import Book
+        from store.models import Category
+        import numpy as np
+        
+        Category.objects.create(name="TestCat", description="Test")
+        Book.objects.create(
+            title="Test Book", 
+            description="Test Desc", 
+            embedding=np.random.rand(384).tolist()
+        )
+
+        query = "test cached query unique"
+        
+        # Mock the entire chain pipeline
+        with patch('recommendations.rag.ChatOllama') as mock_llm_cls, \
+             patch('recommendations.rag.ChatPromptTemplate') as mock_prompt_cls, \
+             patch('recommendations.rag.StrOutputParser') as mock_parser_cls:
+            
+            # Setup mock chain
+            mock_llm = MagicMock()
+            mock_llm_cls.return_value = mock_llm
+            
+            mock_prompt = MagicMock()
+            mock_prompt_cls.from_template.return_value = mock_prompt
+            
+            mock_parser = MagicMock()
+            mock_parser_cls.return_value = mock_parser
+            
+            # Construct the chain mock
+            mock_intermediate = MagicMock()
+            mock_prompt.__or__.return_value = mock_intermediate
+            
+            mock_chain = MagicMock()
+            mock_intermediate.__or__.return_value = mock_chain
+            
+            # Configure stream to return chunks
+            expected_chunks = ['["Reason 1", ', '"Reason 2"]']
+            mock_chain.stream.return_value = iter(expected_chunks)
+            
+            # First call - should hit LLM
+            # Use list() to consume the generator
+            result1_chunks = list(get_recommendations_by_query_stream(query, top_k=2))
+            result1 = "".join(result1_chunks)
+            
+            # Verify chain.stream was called
+            self.assertEqual(mock_chain.stream.call_count, 1)
+            self.assertEqual(result1, '["Reason 1", "Reason 2"]')
+            
+            # Second call - should use cache
+            result2_chunks = list(get_recommendations_by_query_stream(query, top_k=2))
+            result2 = "".join(result2_chunks)
+            
+            # Verify chain.stream was NOT called again (count remains 1)
+            self.assertEqual(mock_chain.stream.call_count, 1)
+            self.assertEqual(result2, '["Reason 1", "Reason 2"]')
+            
+            # Verify data is in DB
+            self.assertTrue(SearchQueryCache.objects.filter(query=query).exists())

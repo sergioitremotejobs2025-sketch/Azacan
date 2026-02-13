@@ -5,7 +5,7 @@ import { FiBook, FiEye, FiUser, FiCalendar } from "react-icons/fi";
 import DeleteButton from "./DeleteButton";
 import { deleteBookAction } from "../actions/book";
 
-export default function BookGrid({ books }: { books: BookRecommendation[] }) {
+export default function BookGrid({ books, backendUrl }: { books: BookRecommendation[], backendUrl?: string }) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {books.map((book: BookRecommendation) => (
@@ -63,7 +63,7 @@ export default function BookGrid({ books }: { books: BookRecommendation[] }) {
 
                             {book.productId && (
                                 <a
-                                    href={`http://localhost:8000/product/${book.productId}`}
+                                    href={`${backendUrl || "http://localhost:8000"}/product/${book.productId}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center justify-center gap-2 py-3 rounded-2xl bg-blue-50 text-blue-600 font-bold hover:bg-blue-100 transition-all active:scale-95 border border-blue-100 text-sm"

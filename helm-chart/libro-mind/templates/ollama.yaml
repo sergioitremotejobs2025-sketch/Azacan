@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-ollama
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: ollama
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.ollama.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ollama
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ollama
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: ollama
+        image: "{{ .Values.ollama.image.repository }}:{{ .Values.ollama.image.tag }}"
+        ports:
+        - name: http-ollama
+          containerPort: 11434
+        volumeMounts:
+        - name: ollama-data
+          mountPath: /root/.ollama
+        resources:
+          {{- toYaml .Values.ollama.resources | nindent 10 }}
+      volumes:
+      - name: ollama-data
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-ollama-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-ollama-service
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: ollama
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selector:
+    app.kubernetes.io/name: ollama
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+  - name: http-ollama
+    port: 11434
+    targetPort: http-ollama
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-ollama-data-pvc
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.ollama.persistence.size }}

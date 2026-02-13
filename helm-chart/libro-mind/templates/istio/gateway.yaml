@@ -1,0 +1,67 @@
+{{- if .Values.istio.enabled -}}
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: {{ .Values.istio.gateway.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    {{- range .Values.istio.gateway.hosts }}
+    - "{{ . }}"
+    {{- end }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ .Release.Name }}-vs
+  namespace: {{ .Release.Namespace }}
+spec:
+  hosts:
+  {{- range .Values.istio.gateway.hosts }}
+  - "{{ . }}"
+  {{- end }}
+  gateways:
+  - {{ .Values.istio.gateway.name }}
+  http:
+  - match:
+    - uri:
+        prefix: /api
+    - uri:
+        prefix: /admin
+    route:
+    - destination:
+        host: {{ .Release.Name }}-backend
+        port:
+          number: {{ .Values.backend.service.port }}
+  - match:
+    - uri:
+        prefix: /ollama
+    route:
+    - destination:
+        host: {{ .Release.Name }}-ollama-service
+        port:
+          number: 11434
+  - match:
+    - uri:
+        prefix: /json-server
+    route:
+    - destination:
+        host: {{ .Release.Name }}-json-server-service
+        port:
+          number: 3002
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: {{ .Release.Name }}-frontend
+        port:
+          number: {{ .Values.frontend.service.port }}
+{{- end }}

@@ -87,10 +87,25 @@ export const saveRecommendationsAction = async (
                 .replace(/```json/g, "")
                 .replace(/```/g, "")
                 .trim();
-            reasons = JSON.parse(cleanJson);
+
+            try {
+                reasons = JSON.parse(cleanJson);
+            } catch (err) {
+                // Fallback: If strict JSON fails, try to extract strings manually
+                console.warn("Standard JSON parse failed, attempting regex fallback for AI reasoning:", err);
+                // Matches strings in double quotes, handling escaped quotes
+                const matches = cleanJson.match(/"([^"\\]*(?:\\.[^"\\]*)*)"/g);
+                if (matches && matches.length > 0) {
+                    reasons = matches.map(m => m.slice(1, -1).replace(/\\"/g, '"'));
+                } else {
+                    throw new Error("Could not extract valid reasons from AI response");
+                }
+            }
         } catch (e) {
             console.error("Failed to parse streamed JSON:", e);
-            return { error: "Failed to parse AI response" };
+            // Even if parsing fails completely, we should try to save the books without reasons
+            // rather than failing the whole operation.
+            reasons = [];
         }
 
         // We still need to fetch the similar books from Django to get the titles/authors

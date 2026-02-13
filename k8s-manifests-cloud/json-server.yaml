@@ -7,8 +7,7 @@ spec:
   selector:
     app: json-server
   ports:
-  - name: http-json-server
-    port: 3002
+  - port: 3002
     targetPort: 3002
 ---
 apiVersion: apps/v1
@@ -29,25 +28,26 @@ spec:
       initContainers:
       - name: init-json-data
         image: busybox
-        command: ['mkdir', '-p', '/app/app/_data']
+        command: ['sh', '-c', 'mkdir -p /app/app/_data && cp /tmp/config/db.json /app/app/_data/db.json']
         volumeMounts:
         - name: json-data
           mountPath: /app
+        - name: config-volume
+          mountPath: /tmp/config
       containers:
       - name: json-server
         image: node:20-slim
         workingDir: /app
         command: ["npx", "json-server", "--watch", "app/_data/db.json", "--port", "3002", "--host", "0.0.0.0"]
         ports:
-        - name: http-json-server
-          containerPort: 3002
+        - containerPort: 3002
         volumeMounts:
         - name: json-data
           mountPath: /app
         resources:
           requests:
-            memory: "128Mi"
-            cpu: "100m"
+            memory: "64Mi"
+            cpu: "20m"
           limits:
             memory: "256Mi"
             cpu: "200m"
@@ -55,6 +55,9 @@ spec:
       - name: json-data
         persistentVolumeClaim:
           claimName: json-data-pvc
+      - name: config-volume
+        configMap:
+          name: json-db-config
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

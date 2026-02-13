@@ -8,8 +8,8 @@ export const setSession = async (name: string, email: string, id: string) => {
     const cookieStore = await cookies()
     cookieStore.set("session", JSON.stringify({ name, email, id }), {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        secure: process.env.SESSION_SECURE !== "false",
+        sameSite: "lax",
         maxAge: 60 * 60 * 24 * 7, // 7 days
         path: "/",
     })

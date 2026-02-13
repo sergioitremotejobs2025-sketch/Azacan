@@ -7,8 +7,7 @@ spec:
   selector:
     app: ollama
   ports:
-  - name: http-ollama
-    port: 11434
+  - port: 11434
     targetPort: 11434
 ---
 apiVersion: apps/v1
@@ -30,19 +29,18 @@ spec:
       - name: ollama
         image: ollama/ollama:latest
         ports:
-        - name: http-ollama
-          containerPort: 11434
+        - containerPort: 11434
         # Optional: Add volume for model storage to avoid re-downloading
         volumeMounts:
         - name: ollama-data
           mountPath: /root/.ollama
         resources:
           requests:
-            memory: "1Gi"
+            memory: "1.5Gi"
             cpu: "500m"
           limits:
-            memory: "2Gi"
-            cpu: "1000m"
+            memory: "2.5Gi"
+            cpu: "1500m"
             # Uncomment if you have GPU nodes
             # nvidia.com/gpu: 1
       volumes:

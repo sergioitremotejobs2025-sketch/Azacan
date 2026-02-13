@@ -4,7 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
 from langchain_core.output_parsers import StrOutputParser
 from pgvector.django import CosineDistance
-from recommendations.models import Book, Purchase
+from recommendations.models import Book, Purchase, SearchQueryCache
 from sentence_transformers import SentenceTransformer
 from django.core.cache import cache
 from django.contrib.auth.models import User
@@ -279,12 +279,14 @@ def get_recommendation_prompt():
            CONTEXT:
            {context}
 
-           TASK: Professional Bookstore AI. provide a JSON list of short matching reasons (1 sentence each).
-           FORMAT: ["Reason 1", "Reason 2", ...]
+           TASK: Professional Bookstore AI. Provide a valid JSON array of strings. Each string is a 1-sentence reason why a book matches the query.
+           FORMAT: ["Reason for first book", "Reason for second book", ...]
+           EXAMPLE: ["A classic novel about love.", "Perfect for beginners in the genre.", "Highly recommended by critics."]
            RULES:
-           - Return ONLY valid JSON.
+           - Return ONLY the JSON array of strings.
+           - NO keys or objects (e.g., do NOT use "Reason 1": ...).
            - No introductory or concluding text.
-           - No explanations of why you can't access real-time data (you are already provided the data).
+           - No explanations of why you can't access real-time data.
         """
     )
 
@@ -293,6 +295,16 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
     Generate book recommendations based on a natural language query using vector similarity (RAG-style).
     Yields chunks of the LLM response for streaming.
     """
+    # Check persistent cache first
+    try:
+        cached_entry = SearchQueryCache.objects.filter(query__iexact=query).first()
+        if cached_entry:
+            logger.info(f"Serving cached recommendations for: {query}")
+            yield cached_entry.response
+            return
+    except Exception as e:
+        logger.error(f"Cache read error: {e}")
+
     try:
         similar_books = get_similar_books(query, top_k)
         logger.info(f"Stream: Found {similar_books.count()} similar books for query: {query}")
@@ -306,36 +318,18 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
         prompt = get_recommendation_prompt()
         chain = prompt | llm | StrOutputParser()
         
-        in_think = False
-        buffer = ""
-        
+        full_response = ""
         for chunk in chain.stream({"query": query, "context": context}):
-            buffer += chunk
-            
-            # Simple state machine to skip <think> blocks
-            if not in_think:
-                if "<think>" in buffer:
-                    # Found start of think block
-                    parts = buffer.split("<think>", 1)
-                    if parts[0]:
-                        yield parts[0]
-                    buffer = "" # Rest will be handled after </think>
-                    in_think = True
-                else:
-                    # No think block yet, stream what we have
-                    yield buffer
-                    buffer = ""
-            
-            if in_think:
-                if "</think>" in buffer:
-                    # Found end of think block
-                    parts = buffer.split("</think>", 1)
-                    buffer = parts[1] # Keep what's after </think>
-                    in_think = False
-                    # Don't yield yet, let the next iteration handle it (or yield if it's the end)
-        
-        if buffer and not in_think:
-             yield buffer
+            full_response += chunk
+            yield chunk
+
+        # Cache the result after successful generation
+        if full_response and len(full_response) > 10:
+            try:
+                # Use get_or_create to handles concurrent requests safely
+                SearchQueryCache.objects.get_or_create(query=query, defaults={'response': full_response})
+            except Exception as e:
+                logger.error(f"Failed to cache search query '{query}': {e}")
 
     except Exception as e:
         logger.error(f"Streaming failed: {e}")

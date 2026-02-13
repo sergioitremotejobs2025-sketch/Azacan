@@ -1,0 +1,28 @@
+# Production values for libro-mind.
+
+backend:
+  replicaCount: 3
+  image:
+    repository: ghcr.io/myuser/libro-mind-backend
+    tag: v12
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+
+frontend:
+  replicaCount: 3
+  image:
+    repository: ghcr.io/myuser/libro-mind-frontend
+    tag: v4
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP # Use Ingress instead of LoadBalancer
+  env:
+    nextPublicApiUrl: "https://api.libromind.com"

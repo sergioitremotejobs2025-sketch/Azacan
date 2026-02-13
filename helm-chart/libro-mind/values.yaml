@@ -1,0 +1,121 @@
+# Default values for libro-mind.
+
+backend:
+  replicaCount: 1
+  image:
+    repository: libro-mind-backend
+    tag: v12
+    pullPolicy: Never # Changed to IfNotPresent for non-minikube
+  service:
+    type: ClusterIP
+    port: 8000
+    targetPort: 8000
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+    hpa:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 5
+      targetCPUUtilizationPercentage: 70
+      targetMemoryUtilizationPercentage: 80
+  config:
+    debug: "0"
+
+frontend:
+  replicaCount: 1
+  image:
+    repository: libro-mind-frontend
+    tag: v4
+    pullPolicy: Never
+  service:
+    type: LoadBalancer # Change to ClusterIP + Ingress in Prod
+    port: 3000
+    targetPort: 3000
+  env:
+    nextPublicApiUrl: "http://backend-service:8000"
+    backendApiUrl: "http://backend-service:8000"
+    jsonServerUrl: "http://json-server-service:3002"
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "400m"
+    hpa:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 70
+
+ingress:
+  enabled: false
+  host: libro-mind.local
+  annotations: {}
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+istio:
+  enabled: true
+  gateway:
+    name: libro-mind-gateway
+    hosts: ["*"]
+
+# Standard Bitnami Postgresql configuration (as a subchart)
+postgresql:
+  enabled: true
+  auth:
+    database: postgres
+    username: postgres
+    existingSecret: "libro-mind-secrets"
+    secretKeys:
+      adminPasswordKey: "POSTGRES_PASSWORD"
+  primary:
+    persistence:
+      size: 1Gi
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+    initContainers:
+      - name: init-pgvector
+        image: bitnami/postgresql:15
+        command: ['/bin/bash', '-c', 'psql -h localhost -U postgres -d postgres -c "CREATE EXTENSION IF NOT EXISTS vector;"']
+
+ollama:
+  image:
+    repository: ollama/ollama
+    tag: latest
+  persistence:
+    size: 5Gi
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+
+jsonServer:
+  image:
+    repository: node
+    tag: 20-slim
+  persistence:
+    size: 100Mi
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"

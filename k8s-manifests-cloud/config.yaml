@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: libro-mind
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: libro-mind-secrets
+  namespace: libro-mind
+type: Opaque
+stringData:
+  POSTGRES_PASSWORD: "postgres_password"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: libro-mind-config
+  namespace: libro-mind
+data:
+  POSTGRES_DB: "postgres"
+  POSTGRES_USER: "postgres"
+  POSTGRES_HOST: "postgres-service"
+  POSTGRES_PORT: "5432"
+  OLLAMA_BASE_URL: "http://ollama-service:11434"
+  DEBUG: "1"

@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-json-server
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: json-server
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.jsonServer.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: json-server
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: json-server
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      initContainers:
+      - name: init-json-data
+        image: busybox
+        command: ['mkdir', '-p', '/app/app/_data']
+        volumeMounts:
+        - name: json-data
+          mountPath: /app
+      containers:
+      - name: json-server
+        image: "{{ .Values.jsonServer.image.repository }}:{{ .Values.jsonServer.image.tag }}"
+        workingDir: /app
+        command: ["npx", "json-server", "--watch", "app/_data/db.json", "--port", "3002", "--host", "0.0.0.0"]
+        ports:
+        - name: http-json-server
+          containerPort: 3002
+        volumeMounts:
+        - name: json-data
+          mountPath: /app
+        resources:
+          {{- toYaml .Values.jsonServer.resources | nindent 10 }}
+      volumes:
+      - name: json-data
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-json-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-json-server-service
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: json-server
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selector:
+    app.kubernetes.io/name: json-server
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+  - name: http-json-server
+    port: 3002
+    targetPort: http-json-server
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-json-data-pvc
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.jsonServer.persistence.size }}

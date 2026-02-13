@@ -105,7 +105,10 @@ const BooksPage = async ({ searchParams }: { searchParams: { query?: string; pag
                     </Link>
                 </div>
             ) : selectedQuery ? (
-                <BookGrid books={filteredBooks} />
+                <BookGrid
+                    books={filteredBooks}
+                    backendUrl={process.env.NEXT_PUBLIC_BACKEND_EXTERNAL_URL}
+                />
             ) : (
                 <>
                     <QueryList queries={paginatedQueries as any} />
