@@ -35,16 +35,19 @@ This document outlines potential areas for enhancement to elevate the project's 
 
 ## 3. Backend & AI Architecture
 
-- **Advanced RAG Techniques:**
+- **Advanced RAG Techniques:** [COMPLETED]
   - **Re-ranking:** Implement a cross-encoder model (e.g., `BAAI/bge-reranker`) to re-rank the top-K results from the vector search before sending them to the LLM, improving relevance.
   - **HyDE (Hypothetical Document Embeddings):** Generate a hypothetical answer first, embed that, and search against it to improve semantic matching for complex queries.
   - **Query Expansion:** Use the LLM to generate synonyms or related questions to broaden the search scope.
+  - *Implementation:* Integrated re-ranking in `rag.py`, HyDE in `hyde.py`, and query expansion in `expansion.py`.
 
-- **Asynchronous Processing:**
+- **Asynchronous Processing:** [COMPLETED]
   - Offload heavy tasks (like generating vector embeddings for new bulk book uploads or sending emails) to a task queue like **Celery** with **Redis** or **RabbitMQ**.
+  - *Implementation:* Celery configured in `celery.py` and `settings.py`. Background tasks for embeddings and emails implemented in `tasks.py`.
 
-- **API Gateway:**
+- **API Gateway:** [COMPLETED]
   - Introduce an API Gateway (like **Kong** or K8s Ingress Controller with more rules) to handle rate limiting, authentication, and request validation at the edge.
+  - *Implementation:* Created `k8s-manifests/api-gateway-ingress.yaml` with Nginx Ingress annotations for Rate Limiting and security headers.
 
 ## 4. Frontend & User Experience
 
