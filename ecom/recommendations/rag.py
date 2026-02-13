@@ -5,7 +5,7 @@ from langchain_ollama import ChatOllama
 from langchain_core.output_parsers import StrOutputParser
 from pgvector.django import CosineDistance
 from recommendations.models import Book, Purchase, SearchQueryCache
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer, CrossEncoder
 from django.core.cache import cache
 from django.contrib.auth.models import User
 import numpy as np
@@ -27,6 +27,19 @@ def get_sentence_transformer_model():
         _model_cache = SentenceTransformer('all-MiniLM-L6-v2')
         logger.info("Model loaded successfully")
     return _model_cache
+
+_reranker_cache = None
+
+def get_reranker_model():
+    """
+    Get or create a cached CrossEncoder model.
+    """
+    global _reranker_cache
+    if _reranker_cache is None:
+        logger.info("Loading CrossEncoder model 'cross-encoder/ms-marco-MiniLM-L-6-v2'...")
+        _reranker_cache = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2') 
+        logger.info("Reranker loaded successfully")
+    return _reranker_cache
 
 
 def get_recommendations(user_id, top_k=3):
@@ -273,6 +286,44 @@ def get_similar_books(query: str, top_k: int = 5):
         .order_by('distance')[:top_k]
     )
 
+def get_reranked_books(query: str, top_k: int = 5, candidates_k: int = 20):
+    """
+    Retrieve candidate books via vector search and then re-rank them using a Cross-Encoder.
+    Returns: List of Book objects (sorted by relevance)
+    """
+    # 1. Get functional candidates (more than we need)
+    candidates = list(get_similar_books(query, top_k=candidates_k))
+    
+    if not candidates:
+        return []
+
+    try:
+        reranker = get_reranker_model()
+        
+        # 2. Prepare pairs for cross-encoding (Query, Document)
+        # We use Title + Description for better context
+        pairs = []
+        for book in candidates:
+            doc_text = f"{book.title}. {book.description or ''}"
+            pairs.append([query, doc_text])
+            
+        # 3. Predict scores
+        scores = reranker.predict(pairs)
+        
+        # 4. Attach scores and sort
+        for i, book in enumerate(candidates):
+            book.rerank_score = scores[i]
+            
+        # Sort descending by score
+        candidates.sort(key=lambda x: x.rerank_score, reverse=True)
+        
+        logger.info(f"Reranked {len(candidates)} books for query '{query}'")
+        return candidates[:top_k]
+        
+    except Exception as e:
+        logger.error(f"Reranking failed: {e}. Falling back to vector search.")
+        return candidates[:top_k]
+
 def get_recommendation_prompt():
     return ChatPromptTemplate.from_template(
         """Below is a list of books retrieved from a database for the query: "{query}"
@@ -306,8 +357,9 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
         logger.error(f"Cache read error: {e}")
 
     try:
-        similar_books = get_similar_books(query, top_k)
-        logger.info(f"Stream: Found {similar_books.count()} similar books for query: {query}")
+        similar_books = get_reranked_books(query, top_k)
+        count = len(similar_books)
+        logger.info(f"Stream: Found {count} similar books for query: {query}")
         if not similar_books:
             yield "[]"
             return
@@ -345,8 +397,9 @@ def get_recommendations_by_query(query: str, top_k: int = 5):
         return cached_result
 
     try:
-        similar_books = get_similar_books(query, top_k)
-        logger.info(f"Found {similar_books.count()} similar books for query: {query}")
+        similar_books = get_reranked_books(query, top_k)
+        count = len(similar_books)
+        logger.info(f"Found {count} similar books for query: {query}")
         if not similar_books:
             return []
 
