@@ -7,28 +7,25 @@ data:
   prometheus.yml: |
     global:
       scrape_interval: 15s
-
     scrape_configs:
-      - job_name: 'django-backend'
-        metrics_path: '/prometheus/metrics'
-        static_configs:
-          - targets: ['backend-service:8000']
-
       - job_name: 'prometheus'
         static_configs:
           - targets: ['localhost:9090']
-
-      - job_name: 'jaeger'
+      - job_name: 'backend'
+        metrics_path: /prometheus/metrics
         static_configs:
-          - targets: ['jaeger:14268']
+          - targets: ['backend-service:8000']
+      - job_name: 'frontend'
+        # Next.js OTel metrics usually need an exporter or a /metrics endpoint using prom-client
+        # For now, placeholder or needs custom implementation
+        static_configs:
+          - targets: ['frontend-service:3000']
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: prometheus
   namespace: libro-mind
-  labels:
-    app: prometheus
 spec:
   replicas: 1
   selector:
@@ -41,7 +38,10 @@ spec:
     spec:
       containers:
       - name: prometheus
-        image: prom/prometheus:v2.45.0
+        image: prom/prometheus:v2.53.0
+        args:
+          - "--config.file=/etc/prometheus/prometheus.yml"
+          - "--storage.tsdb.path=/prometheus"
         ports:
         - containerPort: 9090
         volumeMounts:
@@ -56,12 +56,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: prometheus-service
+  name: prometheus
   namespace: libro-mind
 spec:
   selector:
     app: prometheus
   ports:
-    - protocol: TCP
-      port: 9090
+    - port: 9090
       targetPort: 9090

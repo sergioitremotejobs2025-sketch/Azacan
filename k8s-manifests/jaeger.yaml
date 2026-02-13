@@ -14,16 +14,19 @@ spec:
     metadata:
       labels:
         app: jaeger
+      annotations:
+        sidecar.istio.io/inject: "false" # In case Istio is used later, Jaeger handles its own sidecars usually
     spec:
       containers:
       - name: jaeger
-        image: jaegertracing/all-in-one:1.50
+        image: jaegertracing/all-in-one:1.64.0
         ports:
         - containerPort: 16686
-        - containerPort: 14268
-        - containerPort: 14250
+          name: query-http
         - containerPort: 4317
+          name: otlp-grpc
         - containerPort: 4318
+          name: otlp-http
         env:
         - name: COLLECTOR_OTLP_ENABLED
           value: "true"
@@ -33,19 +36,21 @@ kind: Service
 metadata:
   name: jaeger
   namespace: libro-mind
+  labels:
+    app: jaeger
 spec:
+  ports:
+  - name: query-http
+    port: 16686
+    targetPort: 16686
+    protocol: TCP
+  - name: otlp-grpc
+    port: 4317
+    targetPort: 4317
+    protocol: TCP
+  - name: otlp-http
+    port: 4318
+    targetPort: 4318
+    protocol: TCP
   selector:
     app: jaeger
-  ports:
-    - name: ui
-      port: 16686
-      targetPort: 16686
-    - name: collector-http
-      port: 14268
-      targetPort: 14268
-    - name: otlp-grpc
-      port: 4317
-      targetPort: 4317
-    - name: otlp-http
-      port: 4318
-      targetPort: 4318
