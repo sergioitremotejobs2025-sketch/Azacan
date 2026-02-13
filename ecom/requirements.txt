@@ -90,3 +90,5 @@ opentelemetry-instrumentation-httpx
 opentelemetry-instrumentation-requests
 opentelemetry-exporter-otlp
 django-prometheus
+celery==5.3.6
+redis==5.0.3

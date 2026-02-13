@@ -286,13 +286,35 @@ def get_similar_books(query: str, top_k: int = 5):
         .order_by('distance')[:top_k]
     )
 
-def get_reranked_books(query: str, top_k: int = 5, candidates_k: int = 20):
+
+
+def get_reranked_books(query: str, top_k: int = 5, candidates_k: int = 20, enable_expansion: bool = True):
     """
     Retrieve candidate books via vector search and then re-rank them using a Cross-Encoder.
     Returns: List of Book objects (sorted by relevance)
     """
+    candidates = []
+    
     # 1. Get functional candidates (more than we need)
-    candidates = list(get_similar_books(query, top_k=candidates_k))
+    if enable_expansion:
+        try:
+            from recommendations.expansion import expand_query
+            variations = expand_query(query)
+            
+            seen_ids = set()
+            for q in variations:
+                # Retrieve slightly fewer per variation to keep total size reasonable
+                results = get_similar_books(q, top_k=candidates_k // 2)
+                for book in results:
+                    if book.id not in seen_ids:
+                        candidates.append(book)
+                        seen_ids.add(book.id)
+            logger.info(f"Expansion found {len(candidates)} unique candidates from {len(variations)} queries")
+        except Exception as e:
+            logger.error(f"Expansion failed: {e}")
+            candidates = list(get_similar_books(query, top_k=candidates_k))
+    else:
+        candidates = list(get_similar_books(query, top_k=candidates_k))
     
     if not candidates:
         return []

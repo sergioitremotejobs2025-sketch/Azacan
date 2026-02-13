@@ -12,8 +12,25 @@ services:
     environment:
       - DEBUG=1
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
       - db
+      - redis
+
+  worker:
+    build: .
+    command: celery -A ecom worker -l info
+    volumes:
+      - static_volume:/app/staticfiles
+    environment:
+      - DEBUG=1
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
 
   db:
     image: pgvector/pgvector:pg15
@@ -25,6 +42,9 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+
+  redis:
+    image: redis:7-alpine
 
 volumes:
   postgres_data:
