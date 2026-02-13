@@ -1,24 +1,20 @@
 output "cluster_name" {
-  description = "Cluster name"
+  description = "Cluster Name"
   value       = google_container_cluster.primary.name
 }
 
 output "cluster_endpoint" {
-  description = "Cluster endpoint"
+  description = "Cluster Endpoint"
   value       = google_container_cluster.primary.endpoint
 }
 
+output "cluster_ca_certificate" {
+  description = "Cluster CA Certificate"
+  sensitive   = true
+  value       = google_container_cluster.primary.master_auth.0.cluster_ca_certificate
+}
+
 output "get_credentials_command" {
-  description = "gcloud command to get credentials"
-  value       = "gcloud container clusters get-credentials ${google_container_cluster.primary.name} --region ${var.region}"
-}
-
-output "sql_instance_connection_name" {
-  description = "The connection name of the Cloud SQL instance."
-  value       = google_sql_database_instance.postgres.connection_name
-}
-
-output "sql_instance_ip" {
-  description = "The private IP address of the Cloud SQL instance."
-  value       = google_sql_database_instance.postgres.private_ip_address
+  description = "Command to get cluster credentials"
+  value       = "gcloud container clusters get-credentials ${google_container_cluster.primary.name} --zone ${google_container_cluster.primary.location} --project ${var.project_id}"
 }

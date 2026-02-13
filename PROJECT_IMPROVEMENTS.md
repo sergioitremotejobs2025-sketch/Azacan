@@ -4,15 +4,17 @@ This document outlines potential areas for enhancement to elevate the project's 
 
 ## 1. DevOps & Infrastructure (Kubernetes & Cloud)
 
-- **Horizontal Pod Autoscaling (HPA):**
+- **Horizontal Pod Autoscaling (HPA):** [COMPLETED]
   - Implement HPA for `backend` and `frontend` deployments based on CPU/Memory utilization to handle traffic spikes automatically.
-  - *Current State:* Static replica counts in manifests.
+  - *Current State:* Manifsts created in `k8s-manifests/hpa.yaml`.
 
-- **Infrastructure as Code (IaC):**
+- **Infrastructure as Code (IaC):** [COMPLETED]
   - Migrate manual `kubectl apply` workflows to **Terraform** or **OpenTofu**. This ensures the entire GCP/Kubernetes infrastructure (clusters, networks, permissions) is reproducible and version-controlled.
+  - *Implementation:* Created Terraform configuration in `terraform/` directory.
 
-- **Helm Charts:**
+- **Helm Charts:** [COMPLETED]
   - Package the application manifests into a **Helm Chart**. This simplifies deployment across different environments (dev, staging, prod) using `values.yaml` files instead of duplicating YAML manifests.
+  - *Implementation:* Created chart in `helm-chart/` directory.
 
 - **Service Mesh (Optional but impressive):**
   - Integrate **Istio** or **Linkerd** for advanced traffic management (canary deployments), mutual TLS (mTLS) security between services, and deeper observability.

@@ -1,0 +1,65 @@
+
+namespace: libro-mind
+
+global:
+  environment: production
+
+ingress:
+  enabled: true
+  host: "libro-mind.local"
+  cors: true
+  annotations:
+    nginx.ingress.kubernetes.io/limit-rps: "5"
+
+frontend:
+  replicaCount: 1
+  image:
+    repository: libro-mind-frontend
+    tag: "v4"
+    pullPolicy: Never
+  service:
+    type: LoadBalancer
+    port: 3000
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "400m"
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 70
+  env:
+    NEXT_PUBLIC_API_URL: "http://libro-mind.local/api"  # Public endpoint (Ingress)
+    BACKEND_API_URL: "http://backend-service:8000"     # Internal service
+    JSON_SERVER_URL: "http://json-server-service:3002"
+
+backend:
+  replicaCount: 1
+  image:
+    repository: libro-mind-backend
+    tag: "v12"
+    pullPolicy: Never
+  service:
+    type: ClusterIP
+    port: 8000
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 70
+  env:
+    POSTGRES_HOST: "db-service"
+    POSTGRES_PORT: "5432"
