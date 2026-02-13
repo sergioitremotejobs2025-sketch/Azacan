@@ -24,10 +24,14 @@ metadata:
     # 4. SSL Redirect (force HTTPS if TLS is configured, disabled for localhost)
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 
+    # 5. Increase Timeouts for AI (300 seconds)
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
+
 spec:
   rules:
-  - host: libro-mind.local
-    http:
+  - http:
       paths:
       # API Routes -> Backend
       - path: /api

@@ -18,6 +18,8 @@ metadata:
   namespace: libro-mind
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: ollama
@@ -26,6 +28,13 @@ spec:
       labels:
         app: ollama
     spec:
+      initContainers:
+      - name: pull-model
+        image: ollama/ollama:latest
+        command: ["sh", "-c", "ollama serve & sleep 10 && ollama pull deepseek-r1:1.5b && ollama pull deepseek-coder:1.3b && pkill ollama"]
+        volumeMounts:
+        - name: ollama-data
+          mountPath: /root/.ollama
       containers:
       - name: ollama
         image: ollama/ollama:latest
@@ -38,11 +47,11 @@ spec:
           mountPath: /root/.ollama
         resources:
           requests:
-            memory: "1Gi"
-            cpu: "500m"
-          limits:
             memory: "2Gi"
             cpu: "1000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
             # Uncomment if you have GPU nodes
             # nvidia.com/gpu: 1
       volumes:

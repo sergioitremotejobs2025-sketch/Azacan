@@ -28,8 +28,8 @@ spec:
     spec:
       containers:
       - name: backend
-        image: libro-mind-backend:v12 # Full checkout version
-        imagePullPolicy: Never # Force use of local image in minikube
+        image: us-central1-docker.pkg.dev/libromind-sergio-1770983773/libro-mind/backend:latest
+        imagePullPolicy: Always
         envFrom:
         - configMapRef:
             name: libro-mind-config
@@ -50,22 +50,22 @@ spec:
           httpGet:
             path: /admin/
             port: http-backend
-          initialDelaySeconds: 180
-          periodSeconds: 15
+          initialDelaySeconds: 300
+          periodSeconds: 20
           timeoutSeconds: 30
           failureThreshold: 5
         readinessProbe:
           httpGet:
             path: /admin/
             port: http-backend
-          initialDelaySeconds: 120
-          periodSeconds: 15
+          initialDelaySeconds: 300
+          periodSeconds: 20
           timeoutSeconds: 30
           failureThreshold: 5
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
             memory: "1Gi"
             cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"

@@ -117,7 +117,7 @@ def get_recommendations(user_id, top_k=3):
         
         # LLM generation
         try:
-            llm = ChatOllama(model="DeepSeek-Coder:latest", temperature=0.7, base_url=os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434'))
+            llm = ChatOllama(model="deepseek-coder:1.3b", temperature=0.7, base_url=os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434'))
             prompt = ChatPromptTemplate.from_template(
             """You are a helpful book expert.
             
@@ -136,12 +136,25 @@ def get_recommendations(user_id, top_k=3):
             response_text = chain.invoke({"context": context, "count": len(similar_books)})
             
             import json
-            try:
-                # Strip think blocks and markdown code tags
-                clean_json = re.sub(r'<think>.*?</think>', '', response_text, flags=re.DOTALL)
-                clean_json = clean_json.replace("```json", "").replace("```", "").strip()
-                reasons = json.loads(clean_json)
-            except (json.JSONDecodeError, ValueError):
+            def robust_json_parse(text):
+                try:
+                    # 1. Clean common LLM artifacts
+                    clean = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL)
+                    clean = clean.replace("```json", "").replace("```", "").strip()
+                    # 2. Extract first array-like structure if it exists
+                    match = re.search(r'\[.*\]', clean, re.DOTALL)
+                    if match:
+                        clean = match.group(0)
+                    # 3. Basic repair for missing closing brackets/quotes
+                    if clean.startswith('[') and not clean.endswith(']'):
+                         if not clean.endswith('"'): clean += '"'
+                         clean += ']'
+                    return json.loads(clean)
+                except Exception:
+                    return None
+
+            reasons = robust_json_parse(response_text)
+            if reasons is None:
                 logger.warning(f"Failed to parse LLM JSON response: {response_text}")
                 reasons = [f"Recommended because it's similar to your taste." for _ in similar_books]
 
@@ -232,7 +245,7 @@ def get_recommendations_by_book_title(book_title: str, top_k: int = 5) -> str:
 
         # Step 4: Generate recommendations using LLM
         try:
-            llm = ChatOllama(model="DeepSeek-Coder:latest", temperature=0.7, base_url=os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434'))
+            llm = ChatOllama(model="deepseek-coder:1.3b", temperature=0.7, base_url=os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434'))
             prompt = ChatPromptTemplate.from_template(
                 """You are a knowledgeable bookstore assistant. 
                     A customer enjoyed the book titled "{book_title}".
@@ -434,12 +447,21 @@ def get_recommendations_by_query(query: str, top_k: int = 5):
         response_text = chain.invoke({"query": query, "context": context})
 
         import json
-        try:
-            # Strip think blocks and markdown code tags
-            clean_json = re.sub(r'<think>.*?</think>', '', response_text, flags=re.DOTALL)
-            clean_json = clean_json.replace("```json", "").replace("```", "").strip()
-            reasons = json.loads(clean_json)
-        except (json.JSONDecodeError, ValueError):
+        def robust_json_parse(text):
+            try:
+                clean = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL)
+                clean = clean.replace("```json", "").replace("```", "").strip()
+                match = re.search(r'\[.*\]', clean, re.DOTALL)
+                if match: clean = match.group(0)
+                if clean.startswith('[') and not clean.endswith(']'):
+                    if not clean.endswith('"'): clean += '"'
+                    clean += ']'
+                return json.loads(clean)
+            except Exception:
+                return None
+
+        reasons = robust_json_parse(response_text)
+        if reasons is None:
             logger.warning(f"Failed to parse LLM JSON: {response_text}")
             reasons = ["Highly relevant matching based on your query." for _ in similar_books]
 

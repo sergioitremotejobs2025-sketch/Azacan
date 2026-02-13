@@ -4,7 +4,7 @@ metadata:
   name: frontend-service
   namespace: libro-mind
 spec:
-  type: LoadBalancer # For local testing with minikube
+  type: NodePort # Ingress handles the LoadBalancer
   selector:
     app: frontend
   ports:
@@ -29,11 +29,11 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: libro-mind-frontend:v4 # Sequential saving version
-        imagePullPolicy: Never
+        image: us-central1-docker.pkg.dev/libromind-sergio-1770983773/libro-mind/frontend:latest
+        imagePullPolicy: Always
         env:
         - name: NEXT_PUBLIC_API_URL
-          value: "http://backend-service:8000"
+          value: "http://34.135.120.2/api"
         - name: BACKEND_API_URL
           value: "http://backend-service:8000"
         - name: JSON_SERVER_URL
