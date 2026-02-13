@@ -39,14 +39,14 @@ on:
       - main
 
 env:
-  PROJECT_ID: 'ecom-book-app-2026'
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   GAR_LOCATION: 'us-central1'
   GKE_CLUSTER: 'libro-mind-cluster'
   GKE_ZONE: 'us-central1-a'
   DEPLOYMENT_NAME: 'libro-mind'
   REPOSITORY: 'libro-mind'
   IMAGE: 'backend'
-  WORKLOAD_IDENTITY_PROVIDER: 'projects/ecom-book-app-2026/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+  WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
 
 jobs:
   setup-build-publish-deploy:
