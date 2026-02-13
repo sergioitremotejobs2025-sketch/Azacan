@@ -16,9 +16,9 @@ provider "google" {
 # To enable remote state storage:
 # 1. Create a GCS bucket manually: `gsutil mb gs://libro-mind-tf-state`
 # 2. Uncomment the block below and run `terraform init`
-# terraform {
-#   backend "gcs" {
-#     bucket  = "libro-mind-tf-state"
-#     prefix  = "terraform/state"
-#   }
-# }
+terraform {
+  backend "gcs" {
+    bucket = "libro-mind-tf-state"
+    prefix = "terraform/state"
+  }
+}

@@ -41,10 +41,10 @@ This document details the pending tasks to modernize the infrastructure using **
 
 - [ ] **Import Existing State (Optional)**
   - [ ] If preserving the current cluster, use `terraform import` to bring existing resources under management.
-  - [ ] *Alternative:* Spin up a parallel "v2" environment to test clean creation.
+  - [ ] *Alternative:* Spin up a parallel "v2" environment to test clean creation. (Note: GCS bucket `libro-mind-tf-state` must be created manually once).
 
-- [ ] **CI/CD Integration**
-  - [ ] Create a GitHub Action to run `terraform plan` on PRs and `terraform apply` on merge to main.
+- [x] **CI/CD Integration**
+  - [x] Create a GitHub Action to run `terraform plan` on PRs and `terraform apply` on merge to main. (Created `.github/workflows/terraform.yml`).
 
 ---
 
@@ -84,7 +84,7 @@ This document details the pending tasks to modernize the infrastructure using **
 - [x] **Traffic Management**
   - [x] **Apply Gateway**: Apply `istio-manifests/libro-mind-gateway.yaml`.
   - [x] **Verify Routing**: Ensure `/api` goes to Backend and `/` goes to Frontend via the Istio Ingress Gateway IP.
-  - [ ] **Define DestinationRules**: Create policies for load balancing (e.g., LEAST_CONN) and connection pooling.
+  - [x] **Define DestinationRules**: Create policies for load balancing (e.g., LEAST_CONN) and connection pooling. (Applied and added to Helm).
 
 - [x] **Observability (Kiali/Jaeger)**
   - [x] Install addons: `prometheus.yaml`, `kiali.yaml`, `jaeger.yaml`.
