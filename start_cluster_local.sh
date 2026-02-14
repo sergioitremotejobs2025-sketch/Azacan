@@ -5,6 +5,9 @@
 
 set -e
 
+# Ensure common binary paths are included
+export PATH=$PATH:/usr/local/bin:/opt/homebrew/bin
+
 # Colors for output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -43,12 +46,12 @@ echo -e "${BLUE}Step 1: Ensuring Minikube is started...${NC}"
 if minikube status > /dev/null 2>&1; then
     echo -e "${GREEN}Minikube is already configured.${NC}"
     if ! minikube status | grep -q "Running"; then
-        echo -e "${YELLOW}Minikube is stopped. Starting...${NC}"
-        minikube start
-    fi
-else
-    echo -e "${YELLOW}Created new Minikube cluster with 6GB RAM and 4 CPUs...${NC}"
+    echo -e "${YELLOW}Minikube is stopped. Starting with 6GB RAM and 4 CPUs...${NC}"
     minikube start --memory 6144 --cpus 4 --driver=docker
+  fi
+else
+  echo -e "${YELLOW}Created new Minikube cluster with 6GB RAM and 4 CPUs...${NC}"
+  minikube start --memory 6144 --cpus 4 --driver=docker
 fi
 
 # 3. Enable Addons
@@ -62,25 +65,39 @@ echo -e "${BLUE}Step 3: Building application images inside Minikube...${NC}"
 echo -e "${YELLOW}(This might take 5-10 minutes on the first run as it pulls dependencies)${NC}"
 
 # Build Backend
-echo -n "Building Backend... "
-minikube image build -t libro-mind-backend:latest -f docker-compose-app/backend.Dockerfile . > /dev/null
-echo -e "${GREEN}Done!${NC}"
+echo -e "Building ${BLUE}Backend${NC} image..."
+minikube image build -t libro-mind-backend:latest -f docker-compose-app/backend.Dockerfile .
+echo -e "${GREEN}Backend build complete!${NC}"
 
 # Build Frontend
-echo -n "Building Frontend... "
-minikube image build -t libro-mind-frontend:latest -f docker-compose-app/frontend.Dockerfile . > /dev/null
-echo -e "${GREEN}Done!${NC}"
+echo -e "\nBuilding ${BLUE}Frontend${NC} image..."
+minikube image build -t libro-mind-frontend:latest -f docker-compose-app/frontend.Dockerfile .
+echo -e "${GREEN}Frontend build complete!${NC}"
 
 # 5. Apply Manifests
-echo -e "${BLUE}Step 4: Deploying to Kubernetes (namespace: libro-mind)...${NC}"
+echo -e "${BLUE}Step 4: Deploying to Kubernetes...${NC}"
+
+# Create namespaces if they don't exist
 kubectl create namespace libro-mind --dry-run=client -o yaml | kubectl apply -f -
+kubectl create namespace logging --dry-run=client -o yaml | kubectl apply -f -
 
 # Retrying apply because sometimes the Ingress Admission Webhook isn't ready immediately
 MAX_RETRIES=3
 RETRY_COUNT=0
 until [ $RETRY_COUNT -ge $MAX_RETRIES ]
 do
-    kubectl apply -f k8s-manifests/ -n libro-mind && break
+    # Apply all manifests except external-secrets.yaml (which is for GCP)
+    echo -e "Applying manifests (attempt $((RETRY_COUNT+1))/$MAX_RETRIES)..."
+    SUCCESS=true
+    for f in k8s-manifests/*.yaml; do
+        if [[ "$(basename "$f")" != "external-secrets.yaml" ]]; then
+            if ! kubectl apply -f "$f"; then
+                SUCCESS=false
+            fi
+        fi
+    done
+    $SUCCESS && break
+    
     RETRY_COUNT=$((RETRY_COUNT+1))
     echo -e "${YELLOW}Some manifests failed to apply. Retrying in 10s ($RETRY_COUNT/$MAX_RETRIES)...${NC}"
     sleep 10
