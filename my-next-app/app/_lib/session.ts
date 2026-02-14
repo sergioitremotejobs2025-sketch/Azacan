@@ -21,8 +21,13 @@ export const getSession = async (): Promise<UserType | null> => {
     if (!session) {
         return null
     }
-    const user = JSON.parse(session) as UserType
-    return user
+    try {
+        const user = JSON.parse(session) as UserType
+        return user
+    } catch (e) {
+        console.error("Failed to parse session cookie:", e)
+        return null
+    }
 }
 
 
