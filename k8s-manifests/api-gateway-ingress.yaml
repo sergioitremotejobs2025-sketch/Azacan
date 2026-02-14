@@ -34,6 +34,14 @@ spec:
   - http:
       paths:
       # API Routes -> Backend
+      - path: /api/stream-recommendations
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 3000
+      # All other API Routes -> Backend
       - path: /api
         pathType: Prefix
         backend:

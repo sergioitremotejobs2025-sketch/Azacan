@@ -14,7 +14,9 @@ export async function POST(req: NextRequest) {
         });
 
         if (!response.ok) {
-            return NextResponse.json({ error: "Failed to fetch from backend" }, { status: response.status });
+            const errorText = await response.text();
+            console.error(`Streaming backend error (${response.status}):`, errorText);
+            return NextResponse.json({ error: `Backend returned ${response.status}: ${errorText}` }, { status: response.status });
         }
 
         // Return the stream directly to the client

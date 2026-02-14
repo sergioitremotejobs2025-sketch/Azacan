@@ -4,8 +4,14 @@ import { BookRecommendation } from "../_types/book";
 const API_URL = process.env.JSON_SERVER_URL || "http://localhost:3002";
 
 export const getBooks = async (userId: string) => {
-    const response = await axios.get(`${API_URL}/books?userId=${userId}`);
-    return response.data as BookRecommendation[];
+    try {
+        console.log(`Fetching books for user ${userId} from ${API_URL}/books`);
+        const response = await axios.get(`${API_URL}/books?userId=${userId}`);
+        return response.data as BookRecommendation[];
+    } catch (error) {
+        console.error(`Error fetching books: ${error}`);
+        throw error;
+    }
 }
 
 export const getBookById = async (bookId: string) => {
