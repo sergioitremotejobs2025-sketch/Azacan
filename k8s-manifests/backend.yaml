@@ -28,8 +28,8 @@ spec:
     spec:
       containers:
       - name: backend
-        image: us-central1-docker.pkg.dev/libromind-sergio-1770983773/libro-mind/backend:latest
-        imagePullPolicy: Always
+        image: libro-mind-backend:latest
+        imagePullPolicy: IfNotPresent
         envFrom:
         - configMapRef:
             name: libro-mind-config

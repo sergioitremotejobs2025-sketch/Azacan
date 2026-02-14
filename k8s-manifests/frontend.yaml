@@ -29,11 +29,11 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: us-central1-docker.pkg.dev/libromind-sergio-1770983773/libro-mind/frontend:latest
-        imagePullPolicy: Always
+        image: libro-mind-frontend:latest
+        imagePullPolicy: IfNotPresent
         env:
         - name: NEXT_PUBLIC_API_URL
-          value: "http://34.135.120.2/api"
+          value: "http://localhost/api"
         - name: BACKEND_API_URL
           value: "http://backend-service:8000"
         - name: JSON_SERVER_URL

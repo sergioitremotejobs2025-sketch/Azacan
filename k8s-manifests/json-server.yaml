@@ -7,7 +7,7 @@ spec:
   selector:
     app: json-server
   ports:
-  - name: http-json-server
+  - name: json-server
     port: 3002
     targetPort: 3002
 ---
@@ -39,7 +39,7 @@ spec:
         workingDir: /app
         command: ["npx", "json-server", "--watch", "app/_data/db.json", "--port", "3002", "--host", "0.0.0.0"]
         ports:
-        - name: http-json-server
+        - name: json-server
           containerPort: 3002
         volumeMounts:
         - name: json-data
