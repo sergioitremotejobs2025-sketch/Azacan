@@ -26,7 +26,10 @@ const BookQueryForm = () => {
                 body: JSON.stringify({ query }),
             });
 
-            if (!response.ok) throw new Error("Failed to start streaming");
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `Streaming failed (Status ${response.status})`);
+            }
 
             const reader = response.body?.getReader();
             const decoder = new TextDecoder();

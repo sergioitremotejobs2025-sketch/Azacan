@@ -4,8 +4,11 @@ export async function POST(req: NextRequest) {
     try {
         const { query } = await req.json();
         const backendUrl = process.env.BACKEND_API_URL || "http://localhost:8000";
+        const targetUrl = `${backendUrl}/api/recommend/query/stream/`;
 
-        const response = await fetch(`${backendUrl}/api/recommend/query/stream/`, {
+        console.log(`[Streaming] Query: "${query}" -> Target: ${targetUrl}`);
+
+        const response = await fetch(targetUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -15,9 +18,11 @@ export async function POST(req: NextRequest) {
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error(`Streaming backend error (${response.status}):`, errorText);
+            console.error(`[Streaming] Backend error (${response.status}):`, errorText);
             return NextResponse.json({ error: `Backend returned ${response.status}: ${errorText}` }, { status: response.status });
         }
+
+        console.log("[Streaming] Success, handing over stream to client");
 
         // Return the stream directly to the client
         return new Response(response.body, {
@@ -27,8 +32,8 @@ export async function POST(req: NextRequest) {
                 "Connection": "keep-alive",
             },
         });
-    } catch (error) {
-        console.error("Streaming error:", error);
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    } catch (error: any) {
+        console.error("[Streaming] Critical error:", error.message || error);
+        return NextResponse.json({ error: "Internal server error: " + (error.message || "Unknown") }, { status: 500 });
     }
 }
