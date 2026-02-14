@@ -28,6 +28,16 @@ if ! docker info > /dev/null 2>&1; then
     echo -e "\n${GREEN}Docker is ready!${NC}"
 fi
 
+# 1.5 Check for port 80 conflicts (Local Nginx, etc)
+if lsof -i :80 > /dev/null 2>&1; then
+    NGINX_PID=$(lsof -t -i :80 | head -n 1)
+    echo -e "${RED}Error: Port 80 is already in use by another process (PID: $NGINX_PID).${NC}"
+    echo -e "${YELLOW}This is likely a local Nginx server. Recommended fix:${NC}"
+    echo -e "  ${BLUE}sudo brew services stop nginx${NC} OR ${BLUE}sudo pkill nginx${NC}"
+    echo -e "${YELLOW}Attempting to proceed anyway, but Ingress might fail...${NC}"
+    sleep 3
+fi
+
 # 2. Start Minikube
 echo -e "${BLUE}Step 1: Ensuring Minikube is started...${NC}"
 if minikube status > /dev/null 2>&1; then
@@ -81,9 +91,10 @@ echo -e "${GREEN}          STARTUP SEQUENCE COMPLETED!               ${NC}"
 echo -e "${GREEN}====================================================${NC}"
 
 echo -e "\n${BLUE}Next Steps:${NC}"
-echo -e "1. Run '${YELLOW}minikube tunnel${NC}' in a separate terminal to enable local access."
-echo -e "2. Access the ${GREEN}Frontend${NC} at: http://localhost"
-echo -e "3. Access the ${GREEN}Django Admin${NC} at: http://localhost/admin/"
-echo -e "4. Check pod status with: '${YELLOW}kubectl get pods -n libro-mind${NC}'"
+echo -e "1. Run '${YELLOW}minikube tunnel${NC}' in a separate terminal (Crucial for http://localhost)."
+echo -e "2. Access the ${GREEN}Frontend${NC} at: ${BLUE}http://localhost${NC}"
+echo -e "3. Access the ${GREEN}Django Admin${NC} at: ${BLUE}http://localhost/admin/${NC}"
+echo -e "4. Access the ${GREEN}Library${NC} at: ${BLUE}http://localhost/books${NC}"
+echo -e "5. Check pod status with: '${YELLOW}kubectl get pods -n libro-mind${NC}'"
 echo ""
-echo -e "${YELLOW}Note: AI models (Ollama) will take a few minutes to pull and start.${NC}"
+echo -e "${YELLOW}Note: The Library (/books) will initialize automatically on first load.${NC}"

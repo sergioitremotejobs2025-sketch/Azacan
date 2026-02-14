@@ -29,7 +29,7 @@ spec:
       initContainers:
       - name: init-json-data
         image: busybox
-        command: ['mkdir', '-p', '/app/app/_data']
+        command: ['sh', '-c', 'mkdir -p /app/app/_data && [ ! -f /app/app/_data/db.json ] && echo "{\"books\": []}" > /app/app/_data/db.json || true']
         volumeMounts:
         - name: json-data
           mountPath: /app
