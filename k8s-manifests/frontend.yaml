@@ -33,7 +33,7 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
         - name: NEXT_PUBLIC_API_URL
-          value: "http://localhost/api"
+          value: "http://localhost"
         - name: BACKEND_API_URL
           value: "http://backend-service:8000"
         - name: JSON_SERVER_URL
