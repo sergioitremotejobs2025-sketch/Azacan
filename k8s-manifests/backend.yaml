@@ -50,18 +50,18 @@ spec:
           httpGet:
             path: /admin/
             port: http-backend
-          initialDelaySeconds: 300
+          initialDelaySeconds: 60
           periodSeconds: 20
           timeoutSeconds: 30
-          failureThreshold: 5
+          failureThreshold: 10
         readinessProbe:
           httpGet:
             path: /admin/
             port: http-backend
-          initialDelaySeconds: 300
+          initialDelaySeconds: 30
           periodSeconds: 20
           timeoutSeconds: 30
-          failureThreshold: 5
+          failureThreshold: 10
         resources:
           requests:
             memory: "1.5Gi"
