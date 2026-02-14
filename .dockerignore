@@ -24,8 +24,14 @@ __pycache__/
 
 # Exclude Next.js build output (will be built fresh)
 .next/
+**/.next/
+my-next-app/.next/
 out/
+**/out/
 
 # Exclude k8s manifests and docker-compose
 k8s-manifests/
 docker-compose-app/
+hpa-v2.yaml
+helm-chart/
+terraform/
