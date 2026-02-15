@@ -35,17 +35,34 @@ def expand_query(query: str, num_variations: int = 3) -> list[str]:
         if match:
             clean_json = match.group(0)
             
-        variations = json.loads(clean_json)
+        try:
+            variations = json.loads(clean_json)
+        except json.JSONDecodeError:
+            # Fallback: try to find strings in quotes if JSON fails
+            variations = re.findall(r'"([^"]*)"', clean_json)
         
         if not isinstance(variations, list):
             variations = [query]
+            
+        # Ensure all items are strings (handles list of dicts or other types)
+        final_variations = []
+        for item in variations:
+            if isinstance(item, str):
+                final_variations.append(item)
+            elif isinstance(item, dict):
+                # If model returned keys like {"text": "..."}, extract the value
+                val = next(iter(item.values())) if item else None
+                if isinstance(val, str):
+                    final_variations.append(val)
+        
+        variations = final_variations if final_variations else [query]
             
         # Ensure original is there
         if query not in variations:
             variations.insert(0, query)
             
         logger.info(f"Expanded '{query}' to: {variations[:5]}")
-        return variations[:5]
+        return [str(v) for v in variations[:5]]
         
     except Exception as e:
         logger.error(f"Query expansion failed: {e}")

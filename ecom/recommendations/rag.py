@@ -10,7 +10,16 @@ from django.core.cache import cache
 from django.contrib.auth.models import User
 import numpy as np
 import logging
+import torch
+import os
 from concurrent.futures import ThreadPoolExecutor
+
+# FORCE CPU USAGE FOR STABILITY IN VARIED ENVIRONMENTS
+os.environ['CUDA_VISIBLE_DEVICES'] = ''
+try:
+    torch.set_default_device('cpu')
+except Exception:
+    pass
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +34,7 @@ def get_sentence_transformer_model():
     global _model_cache
     if _model_cache is None:
         logger.info("Loading SentenceTransformer model 'all-MiniLM-L6-v2'...")
-        _model_cache = SentenceTransformer('all-MiniLM-L6-v2')
+        _model_cache = SentenceTransformer('all-MiniLM-L6-v2', device='cpu')
         logger.info("Model loaded successfully")
     return _model_cache
 
@@ -38,7 +47,7 @@ def get_reranker_model():
     global _reranker_cache
     if _reranker_cache is None:
         logger.info("Loading CrossEncoder model 'cross-encoder/ms-marco-MiniLM-L-6-v2'...")
-        _reranker_cache = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2') 
+        _reranker_cache = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2', device='cpu') 
         logger.info("Reranker loaded successfully")
     return _reranker_cache
 
@@ -319,8 +328,10 @@ def get_reranked_books(query: str, top_k: int = 5, candidates_k: int = 20, enabl
             
             # Parallelize vector searches for all variations
             with ThreadPoolExecutor(max_workers=5) as executor:
-                # Use list to consume the generator
-                future_to_query = {executor.submit(get_similar_books, q, top_k=candidates_k // 2): q for q in variations}
+                # Ensure variations are strings and not empty
+                valid_variations = [str(v) for v in variations if v and str(v).strip()]
+                
+                future_to_query = {executor.submit(get_similar_books, q, top_k=candidates_k // 2): q for q in valid_variations}
                 
                 for future in future_to_query:
                     try:

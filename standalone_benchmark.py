@@ -74,7 +74,8 @@ def benchmark_query(query, top_k=5):
 
 queries = [
     "Sci-fi books with space travel",
-    "Mystery novels set in London"
+    "Mystery novels set in London",
+    "Historical fiction about the French Revolution"
 ]
 
 results = []
