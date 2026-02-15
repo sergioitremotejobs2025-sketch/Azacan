@@ -150,15 +150,25 @@ else
     kubectl exec -n libro-mind "$BACKEND_POD" -- python -c "import os; from langchain_ollama import ChatOllama; ChatOllama(model='deepseek-r1:1.5b', base_url=os.getenv('OLLAMA_BASE_URL')).invoke('hi')" > /dev/null 2>&1 || echo "Ollama model is warming up..."
 fi
 
+# 7. Start Minikube Tunnel (Background)
+echo -e "${BLUE}Step 7: Starting Minikube Tunnel in background...${NC}"
+echo -e "${YELLOW}Note: You may be prompted for your sudo password to bind to port 80.${NC}"
+# Use a nohup or simple background process. 
+# We don't use set -e for the tunnel as it might be already running or fail safely.
+minikube tunnel > /tmp/minikube_tunnel.log 2>&1 &
+TUNNEL_PID=$!
+echo -e "${GREEN}Tunnel started (PID: $TUNNEL_PID). Logs at /tmp/minikube_tunnel.log${NC}"
+
 echo -e "\n${GREEN}====================================================${NC}"
 echo -e "${GREEN}          STARTUP SEQUENCE COMPLETED!               ${NC}"
 echo -e "${GREEN}====================================================${NC}"
 
 echo -e "\n${BLUE}Next Steps:${NC}"
-echo -e "1. Run '${YELLOW}minikube tunnel${NC}' in a separate terminal (Crucial for http://localhost)."
-echo -e "2. Access the ${GREEN}Frontend${NC} at: ${BLUE}http://localhost${NC}"
-echo -e "3. Access the ${GREEN}Django Admin${NC} at: ${BLUE}http://localhost/admin/${NC}"
-echo -e "4. Access the ${GREEN}Library${NC} at: ${BLUE}http://localhost/books${NC}"
-echo -e "5. Check pod status with: '${YELLOW}kubectl get pods -n libro-mind${NC}'"
+echo -e "1. Access the ${GREEN}Frontend${NC} at: ${BLUE}http://localhost${NC}"
+echo -e "2. Access the ${GREEN}Django Admin${NC} at: ${BLUE}http://localhost/admin/${NC}"
+echo -e "3. Access the ${GREEN}Library${NC} at: ${BLUE}http://localhost/books${NC}"
+echo -e "4. Check pod status with: '${YELLOW}kubectl get pods -n libro-mind${NC}'"
+echo -e "5. The tunnel is running in background. To stop it: '${YELLOW}kill $TUNNEL_PID${NC}'"
 echo ""
 echo -e "${YELLOW}Note: The Library (/books) will initialize automatically on first load.${NC}"
+echo -e "${YELLOW}If localhost is not reachable, check /tmp/minikube_tunnel.log for errors.${NC}"
