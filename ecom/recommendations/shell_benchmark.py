@@ -1,3 +1,15 @@
+import os
+
+# OVERRIDE ENVIRONMENT FOR LOCAL BENCHMARK
+os.environ['POSTGRES_HOST'] = 'localhost'
+os.environ['POSTGRES_DB'] = 'book_store_db'  # Based on smoke_test.sh local config
+os.environ['POSTGRES_USER'] = 'sergioabad'   # Based on smoke_test.sh local config
+os.environ['POSTGRES_PASSWORD'] = ''          # Based on smoke_test.sh local config
+os.environ['HF_HOME'] = os.path.join(os.getcwd(), '.hf_cache')
+os.environ['SENTENCE_TRANSFORMERS_HOME'] = os.path.join(os.getcwd(), '.hf_cache')
+os.environ['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
+os.environ['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
+
 import time
 import logging
 from recommendations.rag import get_recommendations_by_query, get_recommendations_by_query_stream
