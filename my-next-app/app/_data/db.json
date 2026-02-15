@@ -611,6 +611,156 @@
       "query": "amor",
       "userId": "2",
       "recommendationDate": "2026-02-11T11:47:16.491Z"
+    },
+    {
+      "id": "9df3e091-4cdf-477a-ad09-13052a074ee1",
+      "title": "RELIGIÓN PARA ATEOS",
+      "author": "ALAIN DE BOTTON",
+      "description": "Edita: RBA  Libros. S.A. Barcelona. 2012. Primera edición. 199 pp. 14X21,3 cm. Rústica. Nuevo. Con este libro, el autor consigue ofrecer una alternativa inteligente y provechosa: quedarse con los beenficios humanos y espirituales que aportan las diversas religiones y dejar de lado una discusión ideológica y dogmática que no conduce a ningún lado. Se sugiere que los agnósticos y los ateos, deberían apropiarse de algunas de las ideas que las religiones atesoran, especialmente aquellas que tratan sobre cómo vivir o cómo organizar nuestras sociedades. Contiene imágenes.",
+      "query": "religion",
+      "userId": "2",
+      "recommendationDate": "2026-02-15T13:24:27.976Z",
+      "productId": 1429
+    },
+    {
+      "id": "e5f6a8bd-4bde-4f09-b919-a24b8cab516d",
+      "title": "PSICOLOGÍA DE LA RELIGIÓN",
+      "author": "ALFONSO R.LOZANO",
+      "description": "Editorial la Antigua, 1996, Panama. Cartoné. 180 pp. 13,7x21 cm. En buen estado.",
+      "query": "religion",
+      "userId": "2",
+      "recommendationDate": "2026-02-15T13:24:27.976Z",
+      "productId": 4247
+    },
+    {
+      "id": "55be9655-3aef-4f46-8cb0-535e8e1822ed",
+      "title": "EL CRISTIANSIMO Y LAS GRANDES ARELIGIONES",
+      "author": "HANS KÜNG Y Otros",
+      "description": "Edita: Círculo de Lectores, S.A. Barcelona. 1993. 715 pp. 13,7x21 cm. Cartoné con sobrecubierta. Nuevo. Las conferencias-coloquio a partir de las cuales se redactó este libro se celebraron en la Universidad de Tubinga en 1982. Inspiradas po la necesidad de entablar, desde el cristianismo, un diálogo abierto y sin prejuicios con las tres grandes religiones  -islam. hinduísmo y budísmo- , las conferencias transcritas repasan rigurosamente las principales concepciones de cada una de esas otras religione, sus diferencias y puntos de contacto con el cristianismo.",
+      "query": "religion",
+      "userId": "2",
+      "recommendationDate": "2026-02-15T13:24:27.976Z",
+      "productId": 1613
+    },
+    {
+      "id": "851fc70a-d667-4ddf-a8eb-a4d6e0e7dae6",
+      "title": "EL RETO DE LOS JÓVENES. Opciones fundamentales en la pastoral de juventud",
+      "author": "COMUNIDADES ADSIS",
+      "description": "Sociedad de Educación Atenas. Madrid. 1987. 267 pp. 13X21 cm. Rústica. Buen estado de conservación. Anotación del anterior propietario en primera página",
+      "query": "religion",
+      "userId": "2",
+      "recommendationDate": "2026-02-15T13:24:27.976Z",
+      "productId": 4842
+    },
+    {
+      "id": "3d0dbae3-695b-4ccf-b108-8b65bbee68f7",
+      "title": "PEDAGOGÍA DIDÁCTICA DE LA FORMACIÓN RELIGIOSA",
+      "author": "VARIOS  AUTORES",
+      "description": "Secretariado Nacional de Catequesis, Madrid 1968. 274. 16,5x23,5 cm. Rústica. Con señales de uso y paso del tiempo. Tiene abundantes subrayados y anotaciones a lapicero. “Ad usum privatum” de los alumnos de primer curso de Escuelas Normales de Magisterio y de profesores de enseñanza religiosa y catequistas.",
+      "query": "religion",
+      "userId": "2",
+      "recommendationDate": "2026-02-15T13:24:27.976Z",
+      "productId": 1938
+    },
+    {
+      "id": "37663400-2eb7-4538-9b72-7ddadfd6d4e5",
+      "title": "RELIGIÓN PARA ATEOS",
+      "author": "ALAIN DE BOTTON",
+      "description": "Edita: RBA  Libros. S.A. Barcelona. 2012. Primera edición. 199 pp. 14X21,3 cm. Rústica. Nuevo. Con este libro, el autor consigue ofrecer una alternativa inteligente y provechosa: quedarse con los beenficios humanos y espirituales que aportan las diversas religiones y dejar de lado una discusión ideológica y dogmática que no conduce a ningún lado. Se sugiere que los agnósticos y los ateos, deberían apropiarse de algunas de las ideas que las religiones atesoran, especialmente aquellas que tratan sobre cómo vivir o cómo organizar nuestras sociedades. Contiene imágenes.",
+      "query": "religion",
+      "userId": "2",
+      "recommendationDate": "2026-02-15T13:25:00.962Z",
+      "productId": 1429
+    },
+    {
+      "id": "da4893d7-4889-4e65-9766-9ab90522e103",
+      "title": "PSICOLOGÍA DE LA RELIGIÓN",
+      "author": "ALFONSO R.LOZANO",
+      "description": "Editorial la Antigua, 1996, Panama. Cartoné. 180 pp. 13,7x21 cm. En buen estado.",
+      "query": "religion",
+      "userId": "2",
+      "recommendationDate": "2026-02-15T13:25:00.962Z",
+      "productId": 4247
+    },
+    {
+      "id": "90e45c6e-9fc8-40a9-80f9-72283cf672a2",
+      "title": "EL CRISTIANSIMO Y LAS GRANDES ARELIGIONES",
+      "author": "HANS KÜNG Y Otros",
+      "description": "Edita: Círculo de Lectores, S.A. Barcelona. 1993. 715 pp. 13,7x21 cm. Cartoné con sobrecubierta. Nuevo. Las conferencias-coloquio a partir de las cuales se redactó este libro se celebraron en la Universidad de Tubinga en 1982. Inspiradas po la necesidad de entablar, desde el cristianismo, un diálogo abierto y sin prejuicios con las tres grandes religiones  -islam. hinduísmo y budísmo- , las conferencias transcritas repasan rigurosamente las principales concepciones de cada una de esas otras religione, sus diferencias y puntos de contacto con el cristianismo.",
+      "query": "religion",
+      "userId": "2",
+      "recommendationDate": "2026-02-15T13:25:00.962Z",
+      "productId": 1613
+    },
+    {
+      "id": "3a2a5b2a-a153-4f60-8ebb-5edcdf969a8e",
+      "title": "EL RETO DE LOS JÓVENES. Opciones fundamentales en la pastoral de juventud",
+      "author": "COMUNIDADES ADSIS",
+      "description": "Sociedad de Educación Atenas. Madrid. 1987. 267 pp. 13X21 cm. Rústica. Buen estado de conservación. Anotación del anterior propietario en primera página",
+      "query": "religion",
+      "userId": "2",
+      "recommendationDate": "2026-02-15T13:25:00.962Z",
+      "productId": 4842
+    },
+    {
+      "id": "f0684763-f4ff-42f7-a292-da4ffd5b5388",
+      "title": "PEDAGOGÍA DIDÁCTICA DE LA FORMACIÓN RELIGIOSA",
+      "author": "VARIOS  AUTORES",
+      "description": "Secretariado Nacional de Catequesis, Madrid 1968. 274. 16,5x23,5 cm. Rústica. Con señales de uso y paso del tiempo. Tiene abundantes subrayados y anotaciones a lapicero. “Ad usum privatum” de los alumnos de primer curso de Escuelas Normales de Magisterio y de profesores de enseñanza religiosa y catequistas.",
+      "query": "religion",
+      "userId": "2",
+      "recommendationDate": "2026-02-15T13:25:00.962Z",
+      "productId": 1938
+    },
+    {
+      "id": "78c36c2a-174f-4fc9-8208-8668fc189765",
+      "title": "CAMILO JOSÉ CELA",
+      "author": "CAMILO JOSÉ CELA",
+      "description": "Ediciones Destino, S.A y Editorial Planeta De Agostini, S.A., Barcelona 1990. 348 pp. 13X20 cm. Cartoné. En perfecto estado. Es el número 34 de la colección “Obras Completas”, Este tomo recoge la obra Nuevo viaje a La Alcarria.",
+      "query": "camilo jose cela",
+      "userId": "2",
+      "recommendationDate": "2026-02-15T13:27:56.282Z",
+      "productId": 4018
+    },
+    {
+      "id": "0b29378c-953c-4547-959b-8a2257e1ca86",
+      "title": "CAMILO JOSÉ CELA",
+      "author": "CAMILO JOSÉ CELA",
+      "description": "Ediciones Destino, S.A. Y Editorial Planeta De Agostini, S.A., Barcelona 1989. 473 pp. 13X20 cm. Cartoné. En perfecto eastado. Es el número 6 de la colección “Obras Completas”. Este tomo recoge tres obras del autor: Cuaderno del Guadarrama, Ávila y Judíos, moros y cristianos.",
+      "query": "camilo jose cela",
+      "userId": "2",
+      "recommendationDate": "2026-02-15T13:27:56.282Z",
+      "productId": 4017
+    },
+    {
+      "id": "1ca46cf0-56d3-495e-b670-f3b57e219951",
+      "title": "JUAN CARLOS HOMBRE",
+      "author": "ALFONSO ZAPATER",
+      "description": "Grupo Libro 88 S.A, España, Rústico, 184 pp, 16,8x23,8 cm, estado correcto, prólogo de Camilo José  Cela.",
+      "query": "camilo jose cela",
+      "userId": "2",
+      "recommendationDate": "2026-02-15T13:27:56.282Z",
+      "productId": 506
+    },
+    {
+      "id": "d63b82d2-6b03-40a2-8761-efd44d01872b",
+      "title": "CAMILO VIVE",
+      "author": "EDUARDO UMAÑA LUNA",
+      "description": "Bustamante Editores 1999. 223 pp. 13,5x21 cm. Rústica con solapas. Como nuevo. La rebelión del maestro ante la injusticia social, su vivencia, su obra y su actualidad.",
+      "query": "camilo jose cela",
+      "userId": "2",
+      "recommendationDate": "2026-02-15T13:27:56.282Z",
+      "productId": 3968
+    },
+    {
+      "id": "7699fa0a-1768-4a58-b2f6-4e6ef9e4bd70",
+      "title": "CAMINANDO JUNTOS, 25 ANIVERSARIO PERRO GUÍA",
+      "author": "Unknown Author",
+      "description": "Edición Once y su fundación, 2015, Madrid. Cartoné, 33x26 cm, 200 pp. Contiene fotografías a todo color.",
+      "query": "camilo jose cela",
+      "userId": "2",
+      "recommendationDate": "2026-02-15T13:27:56.282Z",
+      "productId": 6269
     }
   ],
   "users": [
