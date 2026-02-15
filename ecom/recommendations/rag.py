@@ -10,6 +10,7 @@ from django.core.cache import cache
 from django.contrib.auth.models import User
 import numpy as np
 import logging
+from concurrent.futures import ThreadPoolExecutor
 
 logger = logging.getLogger(__name__)
 
@@ -315,13 +316,22 @@ def get_reranked_books(query: str, top_k: int = 5, candidates_k: int = 20, enabl
             variations = expand_query(query)
             
             seen_ids = set()
-            for q in variations:
-                # Retrieve slightly fewer per variation to keep total size reasonable
-                results = get_similar_books(q, top_k=candidates_k // 2)
-                for book in results:
-                    if book.id not in seen_ids:
-                        candidates.append(book)
-                        seen_ids.add(book.id)
+            
+            # Parallelize vector searches for all variations
+            with ThreadPoolExecutor(max_workers=5) as executor:
+                # Use list to consume the generator
+                future_to_query = {executor.submit(get_similar_books, q, top_k=candidates_k // 2): q for q in variations}
+                
+                for future in future_to_query:
+                    try:
+                        results = future.result()
+                        for book in results:
+                            if book.id not in seen_ids:
+                                candidates.append(book)
+                                seen_ids.add(book.id)
+                    except Exception as exc:
+                        logger.error(f"Search for '{future_to_query[future]}' generated an exception: {exc}")
+
             logger.info(f"Expansion found {len(candidates)} unique candidates from {len(variations)} queries")
         except Exception as e:
             logger.error(f"Expansion failed: {e}")
@@ -406,9 +416,25 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
         chain = prompt | llm | StrOutputParser()
         
         full_response = ""
+        in_think_block = False
+        
         for chunk in chain.stream({"query": query, "context": context}):
             full_response += chunk
-            yield chunk
+            
+            # Simple streaming filter for <think> blocks
+            if "<think>" in chunk:
+                in_think_block = True
+                continue
+            if "</think>" in chunk:
+                in_think_block = False
+                # If the chunk contains text AFTER </think>, extract it
+                parts = chunk.split("</think>")
+                if len(parts) > 1 and parts[1].strip():
+                    yield parts[1]
+                continue
+            
+            if not in_think_block:
+                yield chunk
 
         # Cache the result after successful generation
         if full_response and len(full_response) > 10:
