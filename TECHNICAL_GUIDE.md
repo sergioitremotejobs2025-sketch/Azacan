@@ -1,4 +1,4 @@
-# Technical Guide: Libro-Mind E-commerce & AI System
+s# Technical Guide: Libro-Mind E-commerce & AI System
 
 ## 1. Project Overview
 **Libro-Mind** is a hybrid e-commerce platform that combines a traditional Django-based bookstore with an advanced AI-powered recommendation system. It leverages Retrieval-Augmented Generation (RAG) to provide semantic search and real-time streaming book recommendations.
