@@ -103,8 +103,20 @@ do
     sleep 10
 done
 
-# 6. Database and Data Initialization
-echo -e "${BLUE}Step 5: Checking Database & Syncing Data...${NC}"
+# 6. Backend Readiness & Data Initialization
+echo -e "${BLUE}Step 5: Ensuring Backend is ready & Syncing Data...${NC}"
+
+BACKEND_POD=$(kubectl get pods -n libro-mind -l app=backend -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
+if [[ -z "$BACKEND_POD" ]]; then
+    echo -e "${YELLOW}Waiting for Backend deployment to create pods...${NC}"
+    sleep 10
+    BACKEND_POD=$(kubectl get pods -n libro-mind -l app=backend -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
+fi
+
+if [[ -n "$BACKEND_POD" ]]; then
+    echo -e "Waiting for ${YELLOW}$BACKEND_POD${NC} to be ready (this includes migrations)..."
+    kubectl wait --for=condition=Ready pod/"$BACKEND_POD" -n libro-mind --timeout=300s
+fi
 
 # Find Postgres pod
 POSTGRES_POD=$(kubectl get pods -n libro-mind -l app=postgres-statefulset -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || kubectl get pods -n libro-mind -l app=postgres -o jsonpath='{.items[0].metadata.name}')
@@ -116,10 +128,11 @@ else
     kubectl wait --for=condition=Ready pod/"$POSTGRES_POD" -n libro-mind --timeout=120s
     
     # Check if books are already imported
-    BOOK_COUNT=$(kubectl exec -n libro-mind "$POSTGRES_POD" -- psql -U postgres -d postgres -t -c "SELECT count(*) FROM recommendations_book;" 2>/dev/null | xargs || echo "0")
+    # We use tr -d '[:space:]' to ensure we get a clean number or empty string
+    BOOK_COUNT=$(kubectl exec -n libro-mind "$POSTGRES_POD" -- psql -U postgres -d postgres -t -c "SELECT count(*) FROM recommendations_book;" 2>/dev/null | xargs | tr -d '[:space:]' || echo "0")
     
-    if [[ "$BOOK_COUNT" == "0" ]]; then
-        echo -e "${YELLOW}Database is empty. Importing book catalog (50MB SQL)...${NC}"
+    if [[ "$BOOK_COUNT" == "0" ]] || [[ -z "$BOOK_COUNT" ]]; then
+        echo -e "${YELLOW}Database is empty (count: '$BOOK_COUNT'). Importing book catalog (50MB SQL)...${NC}"
         if [ -f "ecom/book_store_db_backup.sql" ]; then
             kubectl cp ecom/book_store_db_backup.sql libro-mind/"$POSTGRES_POD":/tmp/backup.sql
             kubectl exec -n libro-mind "$POSTGRES_POD" -- psql -U postgres -d postgres -f /tmp/backup.sql
@@ -134,15 +147,10 @@ fi
 
 # Sync Products and Reindex
 echo -e "\n${BLUE}Step 6: Syncing Store Products & Ensuring Models...${NC}"
-BACKEND_POD=$(kubectl get pods -n libro-mind -l app=backend -o jsonpath='{.items[0].metadata.name}')
 
 if [[ -z "$BACKEND_POD" ]]; then
-    echo -e "${RED}Error: Could not find Backend pod.${NC}"
+    echo -e "${RED}Error: Could not find Backend pod for sync.${NC}"
 else
-    echo -e "Waiting for ${YELLOW}$BACKEND_POD${NC} to be ready..."
-    # Probes take time, so we wait longer for ready state
-    kubectl wait --for=condition=Ready pod/"$BACKEND_POD" -n libro-mind --timeout=300s
-    
     echo -e "Running sync_books_to_products..."
     kubectl exec -n libro-mind "$BACKEND_POD" -- python manage.py sync_books_to_products
     
