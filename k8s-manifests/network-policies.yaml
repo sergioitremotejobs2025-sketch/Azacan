@@ -59,7 +59,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: db # Assuming 'db' label on postgres deployment
+      app: postgres # Corrected to match db.yaml
   policyTypes:
   - Ingress
   ingress:
