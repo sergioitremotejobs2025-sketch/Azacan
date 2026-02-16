@@ -150,25 +150,47 @@ else
     kubectl exec -n libro-mind "$BACKEND_POD" -- python -c "import os; from langchain_ollama import ChatOllama; ChatOllama(model='deepseek-r1:1.5b', base_url=os.getenv('OLLAMA_BASE_URL')).invoke('hi')" > /dev/null 2>&1 || echo "Ollama model is warming up..."
 fi
 
-# 7. Start Minikube Tunnel (Background)
-echo -e "${BLUE}Step 7: Starting Minikube Tunnel in background...${NC}"
-echo -e "${YELLOW}Note: You may be prompted for your sudo password to bind to port 80.${NC}"
-# Use a nohup or simple background process. 
-# We don't use set -e for the tunnel as it might be already running or fail safely.
+# 7. Bridging Cluster to Local Host
+echo -e "${BLUE}Step 7: Bridging Cluster to Local Host...${NC}"
+echo -e "${YELLOW}Starting service tunnels for easy accessibility...${NC}"
+
+# 7.1 Start Minikube Tunnel (for Ingress/localhost)
+# We run this in the background, but on macOS it needs sudo for port 80.
+# We use a non-blocking background process.
 minikube tunnel > /tmp/minikube_tunnel.log 2>&1 &
 TUNNEL_PID=$!
-echo -e "${GREEN}Tunnel started (PID: $TUNNEL_PID). Logs at /tmp/minikube_tunnel.log${NC}"
+
+# 7.2 Start Service Bridge (Fallback for agent/environments without sudo)
+# This binds to a random high port on 127.0.0.1, making it reachable even without port 80 access.
+echo -e "Starting ${YELLOW}frontend-service${NC} bridge..."
+# We run this in background and capture the URL
+minikube service -n libro-mind frontend-service --url > /tmp/frontend_service.log 2>&1 &
+SERVICE_PID=$!
+
+# Give it a moment to generate the URL
+sleep 5
+SERVICE_URL=$(grep "http://127.0.0.1" /tmp/frontend_service.log | tail -n 1 || echo "")
+
+if [[ -n "$SERVICE_URL" ]]; then
+    echo -e "${GREEN}Service Bridge active at: ${BLUE}$SERVICE_URL${NC}"
+else
+    echo -e "${YELLOW}Service Bridge is still initializing in the background.${NC}"
+fi
 
 echo -e "\n${GREEN}====================================================${NC}"
 echo -e "${GREEN}          STARTUP SEQUENCE COMPLETED!               ${NC}"
 echo -e "${GREEN}====================================================${NC}"
 
 echo -e "\n${BLUE}Next Steps:${NC}"
-echo -e "1. Access the ${GREEN}Frontend${NC} at: ${BLUE}http://localhost${NC}"
-echo -e "2. Access the ${GREEN}Django Admin${NC} at: ${BLUE}http://localhost/admin/${NC}"
-echo -e "3. Access the ${GREEN}Library${NC} at: ${BLUE}http://localhost/books${NC}"
+echo -e "1. Access via ${GREEN}Ingress (Recommended)${NC}: ${BLUE}http://localhost${NC} (Requires 'sudo minikube tunnel')"
+if [[ -n "$SERVICE_URL" ]]; then
+    echo -e "2. Access via ${GREEN}Service Tunnel (Fallback)${NC}: ${BLUE}$SERVICE_URL${NC}"
+else
+    echo -e "2. Access via ${GREEN}Service Tunnel (Fallback)${NC}: Run '${YELLOW}minikube service -n libro-mind frontend-service --url${NC}'"
+fi
+echo -e "3. Access the ${GREEN}Django Admin${NC} at: ${BLUE}http://localhost/admin/${NC}"
 echo -e "4. Check pod status with: '${YELLOW}kubectl get pods -n libro-mind${NC}'"
-echo -e "5. The tunnel is running in background. To stop it: '${YELLOW}kill $TUNNEL_PID${NC}'"
+echo -e "5. To stop tunnels: '${YELLOW}kill $TUNNEL_PID $SERVICE_PID${NC}' 2>/dev/null"
 echo ""
 echo -e "${YELLOW}Note: The Library (/books) will initialize automatically on first load.${NC}"
-echo -e "${YELLOW}If localhost is not reachable, check /tmp/minikube_tunnel.log for errors.${NC}"
+echo -e "${YELLOW}If localhost is not reachable, use the Service Tunnel URL above.${NC}"
