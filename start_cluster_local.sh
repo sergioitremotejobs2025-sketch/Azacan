@@ -160,21 +160,26 @@ echo -e "${YELLOW}Starting service tunnels for easy accessibility...${NC}"
 minikube tunnel > /tmp/minikube_tunnel.log 2>&1 &
 TUNNEL_PID=$!
 
-# 7.2 Start Service Bridge (Fallback for agent/environments without sudo)
+# 7.2 Start Service Bridges (Fallback for agent/environments without sudo)
 # This binds to a random high port on 127.0.0.1, making it reachable even without port 80 access.
 echo -e "Starting ${YELLOW}frontend-service${NC} bridge..."
-# We run this in background and capture the URL
 minikube service -n libro-mind frontend-service --url > /tmp/frontend_service.log 2>&1 &
-SERVICE_PID=$!
+FRONTEND_SERVICE_PID=$!
 
-# Give it a moment to generate the URL
+echo -e "Starting ${YELLOW}backend-service${NC} bridge..."
+minikube service -n libro-mind backend-service --url > /tmp/backend_service.log 2>&1 &
+BACKEND_SERVICE_PID=$!
+
+# Give them a moment to generate URLs
 sleep 5
-SERVICE_URL=$(grep "http://127.0.0.1" /tmp/frontend_service.log | tail -n 1 || echo "")
+FRONTEND_URL=$(grep "http://127.0.0.1" /tmp/frontend_service.log | tail -n 1 || echo "")
+BACKEND_URL=$(grep "http://127.0.0.1" /tmp/backend_service.log | tail -n 1 || echo "")
 
-if [[ -n "$SERVICE_URL" ]]; then
-    echo -e "${GREEN}Service Bridge active at: ${BLUE}$SERVICE_URL${NC}"
-else
-    echo -e "${YELLOW}Service Bridge is still initializing in the background.${NC}"
+if [[ -n "$FRONTEND_URL" ]]; then
+    echo -e "${GREEN}Frontend Bridge active at: ${BLUE}$FRONTEND_URL${NC}"
+fi
+if [[ -n "$BACKEND_URL" ]]; then
+    echo -e "${GREEN}Backend Bridge active at:  ${BLUE}$BACKEND_URL${NC}"
 fi
 
 echo -e "\n${GREEN}====================================================${NC}"
@@ -183,14 +188,21 @@ echo -e "${GREEN}====================================================${NC}"
 
 echo -e "\n${BLUE}Next Steps:${NC}"
 echo -e "1. Access via ${GREEN}Ingress (Recommended)${NC}: ${BLUE}http://localhost${NC} (Requires 'sudo minikube tunnel')"
-if [[ -n "$SERVICE_URL" ]]; then
-    echo -e "2. Access via ${GREEN}Service Tunnel (Fallback)${NC}: ${BLUE}$SERVICE_URL${NC}"
+
+if [[ -n "$FRONTEND_URL" ]]; then
+    echo -e "2. Access ${GREEN}Frontend${NC} via Bridge: ${BLUE}$FRONTEND_URL${NC}"
 else
-    echo -e "2. Access via ${GREEN}Service Tunnel (Fallback)${NC}: Run '${YELLOW}minikube service -n libro-mind frontend-service --url${NC}'"
+    echo -e "2. Access ${GREEN}Frontend${NC} via Bridge: Run '${YELLOW}minikube service -n libro-mind frontend-service --url${NC}'"
 fi
-echo -e "3. Access the ${GREEN}Django Admin${NC} at: ${BLUE}http://localhost/admin/${NC}"
+
+if [[ -n "$BACKEND_URL" ]]; then
+    echo -e "3. Access ${GREEN}Backend/Admin${NC} via Bridge: ${BLUE}${BACKEND_URL}/admin/${NC}"
+else
+    echo -e "3. Access ${GREEN}Backend/Admin${NC} via Bridge: Run '${YELLOW}minikube service -n libro-mind backend-service --url${NC}'"
+fi
+
 echo -e "4. Check pod status with: '${YELLOW}kubectl get pods -n libro-mind${NC}'"
-echo -e "5. To stop tunnels: '${YELLOW}kill $TUNNEL_PID $SERVICE_PID${NC}' 2>/dev/null"
+echo -e "5. To stop tunnels: '${YELLOW}kill $TUNNEL_PID $FRONTEND_SERVICE_PID $BACKEND_SERVICE_PID${NC}' 2>/dev/null"
 echo ""
 echo -e "${YELLOW}Note: The Library (/books) will initialize automatically on first load.${NC}"
-echo -e "${YELLOW}If localhost is not reachable, use the Service Tunnel URL above.${NC}"
+echo -e "${YELLOW}If localhost is not reachable, use the Service Bridge URLs above.${NC}"
