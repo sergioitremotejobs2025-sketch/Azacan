@@ -46,12 +46,12 @@ echo -e "${BLUE}Step 1: Ensuring Minikube is started...${NC}"
 if minikube status > /dev/null 2>&1; then
     echo -e "${GREEN}Minikube is already configured.${NC}"
     if ! minikube status | grep -q "Running"; then
-    echo -e "${YELLOW}Minikube is stopped. Starting with 6GB RAM and 4 CPUs...${NC}"
-    minikube start --memory 6144 --cpus 4 --driver=docker
+    echo -e "${YELLOW}Minikube is stopped. Starting with 7GB RAM and 6 CPUs...${NC}"
+    minikube start --memory 7168 --cpus 6 --driver=docker
   fi
 else
-  echo -e "${YELLOW}Created new Minikube cluster with 6GB RAM and 4 CPUs...${NC}"
-  minikube start --memory 6144 --cpus 4 --driver=docker
+  echo -e "${YELLOW}Created new Minikube cluster with 7GB RAM and 6 CPUs...${NC}"
+  minikube start --memory 7168 --cpus 6 --driver=docker
 fi
 
 # 3. Enable Addons
