@@ -23,7 +23,7 @@ def expand_query(query: str, num_variations: int = 3) -> list[str]:
 
     try:
         # Use a faster, lighter model for pre-processing tasks like expansion
-        llm = ChatOllama(model="DeepSeek-Coder:latest", temperature=0.7, base_url=os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434'))
+        llm = ChatOllama(model="deepseek-coder:1.3b", temperature=0.7, base_url=os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434'))
         
         prompt = ChatPromptTemplate.from_template(
             """Generate {num} search query variations for: "{query}".
