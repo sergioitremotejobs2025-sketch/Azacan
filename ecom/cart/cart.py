@@ -17,6 +17,11 @@ class Cart():
         # Temporary fix for legacy cart data that stored quantity as int directly
         # checks if key is int and converts to dictionary if so
         changed = False
+        # Sanitize cart: remove empty keys
+        if "" in self.cart:
+            del self.cart[""]
+            changed = True
+
         for key, value in self.cart.items():
             if isinstance(value, int):
                 self.cart[key] = {'quantity': value}
@@ -72,11 +77,12 @@ class Cart():
             cart[str(product.id)]['product'] = product
             
         for item in cart.values(): 
+            # Skip items where the product was not found in the database
+            if 'product' not in item:
+                continue
+
             # Ensure price is handled correctly from the product object if available
-            if 'product' in item:
-                item['price'] = item['product'].sale_price if item['product'].is_sale else item['product'].price
-            else:
-                item['price'] = Decimal(item.get('price', 0))
+            item['price'] = item['product'].sale_price if item['product'].is_sale else item['product'].price
                 
             item['total_price'] = item['price'] * item['quantity']
             yield item
