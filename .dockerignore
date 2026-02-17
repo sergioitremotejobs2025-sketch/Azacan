@@ -2,6 +2,8 @@
 myenv/
 venv/
 .venv/
+clean_env_310/
+new_env/
 
 # Exclude node_modules (will be installed fresh)
 node_modules/
@@ -19,19 +21,17 @@ node_modules/
 __pycache__/
 *.pyc
 
-# Exclude Django backend (not needed for frontend)
-# ecom/
-
-# Exclude Next.js build output (will be built fresh)
-.next/
-**/.next/
-my-next-app/.next/
-out/
-**/out/
+# Exclude HuggingFace cache and other large artifacts
+.hf_cache/
+istio-1.28.3/
+*.sql
 
 # Exclude k8s manifests and docker-compose
 k8s-manifests/
+k8s-manifests-cloud/
+istio-manifests/
 docker-compose-app/
 hpa-v2.yaml
 helm-chart/
 terraform/
+ghcr/
