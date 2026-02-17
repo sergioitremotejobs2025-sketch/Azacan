@@ -12,6 +12,7 @@ import numpy as np
 import logging
 import torch
 import os
+import hashlib
 from concurrent.futures import ThreadPoolExecutor
 
 # FORCE CPU USAGE FOR STABILITY IN VARIED ENVIRONMENTS
@@ -462,29 +463,47 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
 def get_recommendations_by_query(query: str, top_k: int = 5):
     """
     Generate book recommendations based on a natural language query using vector similarity (RAG-style).
+    Includes secondary persistent cache check to avoid duplicate LLM runs.
     """
-    cache_key = f"recommendations_query_v3_{hash(query)}_{top_k}"
+    stable_query = query.lower().strip()
+    cache_key = f"recommendations_query_v4_{hashlib.md5(stable_query.encode()).hexdigest()}_{top_k}"
     cached_result = cache.get(cache_key)
     if cached_result:
+        logger.info(f"Memory cache hit for: {stable_query}")
         return cached_result
 
     try:
+        # Step 1: Get similar books (vector search + reranking)
+        # This part is relatively fast, especially with expansion caching enabled
         similar_books = get_reranked_books(query, top_k)
-        count = len(similar_books)
-        logger.info(f"Found {count} similar books for query: {query}")
         if not similar_books:
             return []
 
-        context = "\n".join([f"Title: {b.title}, Author: {b.author}, Description: {b.description}" for b in similar_books])
+        response_text = None
         
-        llm = ChatOllama(model="deepseek-r1:1.5b", temperature=0.1, base_url=os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434'))
-        prompt = get_recommendation_prompt()
-        chain = prompt | llm | StrOutputParser()
-        
-        response_text = chain.invoke({"query": query, "context": context})
+        # Step 2: Check persistent database cache before running LLM
+        persistent_entry = SearchQueryCache.objects.filter(query__iexact=query).first()
+        if persistent_entry:
+            logger.info(f"Persistent cache hit for: {query}. Skipping LLM.")
+            response_text = persistent_entry.response
+        else:
+            # Step 3: LLM generation if no cache
+            logger.info(f"Cache miss for: {query}. Running LLM generation...")
+            context = "\n".join([f"Title: {b.title}, Author: {b.author}, Description: {b.description}" for b in similar_books])
+            
+            llm = ChatOllama(model="deepseek-r1:1.5b", temperature=0.1, base_url=os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434'))
+            prompt = get_recommendation_prompt()
+            chain = prompt | llm | StrOutputParser()
+            
+            response_text = chain.invoke({"query": query, "context": context})
+            
+            # Save to persistent cache for future streaming requests
+            if response_text and len(response_text) > 10:
+                 SearchQueryCache.objects.get_or_create(query=query, defaults={'response': response_text})
 
         import json
         def robust_json_parse(text):
+
             try:
                 clean = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL)
                 clean = clean.replace("```json", "").replace("```", "").strip()

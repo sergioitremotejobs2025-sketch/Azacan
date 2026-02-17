@@ -8,10 +8,19 @@ from langchain_core.output_parsers import StrOutputParser
 
 logger = logging.getLogger(__name__)
 
+from django.core.cache import cache
+import hashlib
+
 def expand_query(query: str, num_variations: int = 3) -> list[str]:
     """
     Expand a user query into multiple variations to improve search recall.
     """
+    cache_key = f"expanded_query_{hashlib.md5(query.lower().strip().encode()).hexdigest()}"
+    cached_variations = cache.get(cache_key)
+    if cached_variations:
+        logger.info(f"Using cached expansion for query: '{query}'")
+        return cached_variations
+
     try:
         # Use a faster, lighter model for pre-processing tasks like expansion
         llm = ChatOllama(model="DeepSeek-Coder:latest", temperature=0.7, base_url=os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434'))
@@ -58,11 +67,10 @@ def expand_query(query: str, num_variations: int = 3) -> list[str]:
         variations = final_variations if final_variations else [query]
             
         # Ensure original is there
-        if query not in variations:
-            variations.insert(0, query)
-            
-        logger.info(f"Expanded '{query}' to: {variations[:5]}")
-        return [str(v) for v in variations[:5]]
+        variations = [str(v) for v in variations[:5]]
+        cache.set(cache_key, variations, 86400) # Cache for 24 hours
+        logger.info(f"Expanded '{query}' to: {variations}")
+        return variations
         
     except Exception as e:
         logger.error(f"Query expansion failed: {e}")
