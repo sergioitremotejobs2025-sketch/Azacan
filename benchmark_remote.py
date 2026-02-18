@@ -10,7 +10,7 @@ def benchmark_query(query):
     
     try:
         # Use stream=True to measure TTFT
-        with requests.post(BACKEND_URL, json={"query": query}, stream=True, timeout=60) as r:
+        with requests.post(BACKEND_URL, json={"query": query}, stream=True, timeout=300) as r:
             if r.status_code != 200:
                 print(f"Error: {r.status_code} - {r.text}", flush=True)
                 return

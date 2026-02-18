@@ -395,19 +395,12 @@ def get_reranked_books(query: str, top_k: int = 5, candidates_k: int = 20, enabl
 
 def get_recommendation_prompt():
     return ChatPromptTemplate.from_template(
-        """Below is a list of books retrieved from a database for the query: "{query}"
-           CONTEXT:
-           {context}
+        """Books for query "{query}":
+{context}
 
-           TASK: Professional Bookstore AI. Provide a valid JSON array of strings. Each string is a 1-sentence reason why a book matches the query.
-           FORMAT: ["Reason for first book", "Reason for second book", ...]
-           EXAMPLE: ["A classic novel about love.", "Perfect for beginners in the genre.", "Highly recommended by critics."]
-           RULES:
-           - Return ONLY the JSON array of strings.
-           - NO keys or objects (e.g., do NOT use "Reason 1": ...).
-           - No introductory or concluding text.
-           - No explanations of why you can't access real-time data.
-        """
+Return ONLY a JSON array of {count} short strings (1 sentence each) explaining why each book matches the query.
+Example: ["Reason 1.", "Reason 2."]
+JSON array:"""
     )
 
 def get_recommendations_by_query_stream(query: str, top_k: int = 5):
@@ -445,50 +438,68 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
             yield "[]"
             return
 
-        context = "\n".join([f"Title: {b.title}, Author: {b.author}, Description: {b.description}" for b in similar_books])
+        # Trim description to keep context short and reduce LLM thinking time
+        context = "\n".join([
+            f"{i+1}. {b.title} by {b.author or 'Unknown'}: {(b.description or '')[:150]}"
+            for i, b in enumerate(similar_books)
+        ])
         
         llm_start = time.time()
-        llm = ChatOllama(model="deepseek-r1:1.5b", temperature=0.1, base_url=os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434'))
-        prompt = get_recommendation_prompt()
-        chain = prompt | llm | StrOutputParser()
+        ollama_base_url = os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434')
         
-        full_response = ""
-        in_think_block = False
-        first_token_time = None
-        
-        print(f"Starting LLM stream for '{query}'...", flush=True)
-        
-        for chunk in chain.stream({"query": query, "context": context}):
-            if first_token_time is None:
-                first_token_time = time.time()
-                print(f"LLM First Token for '{query}': {first_token_time - llm_start:.3f}s", flush=True)
+        # Build the prompt text directly - very short to minimize output tokens
+        prompt_text = f"""Books for "{query}":
+{context}
 
-            full_response += chunk
-            
-            # Simple streaming filter for <think> blocks
-            if "<think>" in chunk:
-                in_think_block = True
-                continue
-            if "</think>" in chunk:
-                in_think_block = False
-                # If the chunk contains text AFTER </think>, extract it
-                parts = chunk.split("</think>")
-                if len(parts) > 1 and parts[1].strip():
-                    yield parts[1]
-                continue
-            
-            if not in_think_block:
-                yield chunk
+Return ONLY a JSON array of {count} strings. Each string: 1 very short sentence (max 10 words) why the book matches.
+JSON:"""
+        
+        print(f"Starting LLM generation for '{query}'...", flush=True)
+        
+        # Use Ollama REST API directly with think=false to disable deepseek-r1 thinking mode
+        # ChatOllama does not support think=false, and the <think> block consumes all num_predict tokens
+        import urllib.request
+        import json as _json
+        
+        payload = _json.dumps({
+            "model": "deepseek-r1:1.5b",
+            "prompt": prompt_text,
+            "stream": False,
+            "think": False,
+            "options": {
+                "num_predict": 100,   # ~22s at 4.5 tok/s
+                "num_ctx": 1024,
+                "temperature": 0.1
+            }
+        }).encode('utf-8')
+        
+        req = urllib.request.Request(
+            f"{ollama_base_url}/api/generate",
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST"
+        )
+        
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            result = _json.loads(resp.read().decode('utf-8'))
+            full_response = result.get("response", "")
+        
+        llm_duration = time.time() - llm_start
+        print(f"LLM completed for '{query}': {llm_duration:.3f}s", flush=True)
+        
+        # Strip any remaining <think>...</think> blocks just in case
+        import re
+        clean_response = re.sub(r'<think>.*?</think>', '', full_response, flags=re.DOTALL).strip()
+        
+        yield clean_response
         
         total_time = time.time() - overall_start
-        llm_duration = time.time() - llm_start
         print(f"Full request for '{query}' completed in {total_time:.3f}s (LLM: {llm_duration:.3f}s)", flush=True)
 
         # Cache the result after successful generation
-        if full_response and len(full_response) > 10:
+        if clean_response and len(clean_response) > 10:
             try:
-                # Use get_or_create to handles concurrent requests safely
-                SearchQueryCache.objects.get_or_create(query=query, defaults={'response': full_response})
+                SearchQueryCache.objects.get_or_create(query=query, defaults={'response': clean_response})
             except Exception as e:
                 print(f"Failed to cache search query '{query}': {e}", flush=True)
 
