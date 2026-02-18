@@ -72,7 +72,7 @@ export default function BookGrid({ books, backendUrl }: { books: BookRecommendat
 
                             {book.productId && (
                                 <a
-                                    href={`${backendUrl || "http://127.0.0.1:50564"}/product/${book.productId}`}
+                                    href={`${backendUrl || "http://127.0.0.1:50469"}/product/${book.productId}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-200"
