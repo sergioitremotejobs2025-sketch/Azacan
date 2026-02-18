@@ -434,7 +434,7 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
 
     try:
         rerank_start = time.time()
-        # Disable expansion to avoid model swapping delay (using different model than generation)
+        # Expansion disabled due to slow inference (84s with deepseek-r1, 53s with deepseek-coder)
         similar_books = get_reranked_books(query, top_k, enable_expansion=False)
         rerank_duration = time.time() - rerank_start
         

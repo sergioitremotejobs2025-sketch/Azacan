@@ -1,5 +1,5 @@
 from django.db import models
-from pgvector.django import VectorField
+from pgvector.django import VectorField, HnswIndex
 from django.contrib.auth.models import User
 
 class Book(models.Model):
@@ -25,6 +25,13 @@ class Book(models.Model):
             models.Index(fields=['title']), 
             models.Index(fields=['author']),
             models.Index(fields=['category']),
+            HnswIndex(
+                name='book_embedding_index',
+                fields=['embedding'],
+                m=16,
+                ef_construction=64,
+                opclasses=['vector_cosine_ops']
+            )
         ]
 
     def __str__(self):
