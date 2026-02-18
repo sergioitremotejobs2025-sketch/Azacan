@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: us-central1-docker.pkg.dev/ecom-book-app-2026/libro-mind-repo/frontend:v7 # Public Backend Link (v7)
+        image: us-central1-docker.pkg.dev/libromind-sergio-1770983773/libro-mind-repo/frontend:test
         imagePullPolicy: IfNotPresent
         env:
         - name: NEXT_PUBLIC_API_URL

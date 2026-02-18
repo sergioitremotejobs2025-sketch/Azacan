@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: us-central1-docker.pkg.dev/ecom-book-app-2026/libro-mind-repo/backend:v17 # Fix Test Setup (v17)
+        image: us-central1-docker.pkg.dev/libromind-sergio-1770983773/libro-mind-repo/backend:test
         imagePullPolicy: IfNotPresent # Changed from Never for cloud
         envFrom:
         - configMapRef:
