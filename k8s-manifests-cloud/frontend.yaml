@@ -34,7 +34,7 @@ spec:
         - name: NEXT_PUBLIC_API_URL
           value: "http://backend-service:8000"
         - name: NEXT_PUBLIC_BACKEND_EXTERNAL_URL
-          value: "http://136.113.211.138:8000"
+          value: "http://136.112.132.41:8000"
         - name: BACKEND_API_URL
           value: "http://backend-service:8000"
         - name: JSON_SERVER_URL
