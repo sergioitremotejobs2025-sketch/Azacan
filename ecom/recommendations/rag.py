@@ -438,26 +438,19 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
             yield "[]"
             return
 
-        # Trim description to keep context short and reduce LLM thinking time
-        context = "\n".join([
-            f"{i+1}. {b.title} by {b.author or 'Unknown'}: {(b.description or '')[:150]}"
-            for i, b in enumerate(similar_books)
-        ])
+        # Ultra-minimal context: just titles to minimize prefill tokens
+        book_titles = ", ".join([f'"{b.title}"' for b in similar_books])
         
         llm_start = time.time()
         ollama_base_url = os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434')
         
-        # Build the prompt text directly - very short to minimize output tokens
-        prompt_text = f"""Books for "{query}":
-{context}
-
-Return ONLY a JSON array of {count} strings. Each string: 1 very short sentence (max 10 words) why the book matches.
-JSON:"""
+        # Ultra-minimal prompt with pre-seeded JSON to minimize prefill + output tokens
+        # Pre-seeding '["' forces the model to continue the JSON array directly
+        prompt_text = f'Why do these books match "{query}"? {book_titles}\nAnswer with a JSON array of {count} short reasons:\n["'
         
         print(f"Starting LLM generation for '{query}'...", flush=True)
         
         # Use Ollama REST API directly with think=false to disable deepseek-r1 thinking mode
-        # ChatOllama does not support think=false, and the <think> block consumes all num_predict tokens
         import urllib.request
         import json as _json
         
@@ -467,8 +460,8 @@ JSON:"""
             "stream": False,
             "think": False,
             "options": {
-                "num_predict": 100,   # ~22s at 4.5 tok/s
-                "num_ctx": 1024,
+                "num_predict": 60,    # ~12s at 5 tok/s
+                "num_ctx": 256,       # Minimal context window = fastest prefill
                 "temperature": 0.1
             }
         }).encode('utf-8')
@@ -482,13 +475,14 @@ JSON:"""
         
         with urllib.request.urlopen(req, timeout=120) as resp:
             result = _json.loads(resp.read().decode('utf-8'))
-            full_response = result.get("response", "")
+            raw_response = result.get("response", "")
         
         llm_duration = time.time() - llm_start
         print(f"LLM completed for '{query}': {llm_duration:.3f}s", flush=True)
         
-        # Strip any remaining <think>...</think> blocks just in case
+        # Reconstruct the full JSON: we pre-seeded '["' so prepend it back
         import re
+        full_response = '["' + raw_response
         clean_response = re.sub(r'<think>.*?</think>', '', full_response, flags=re.DOTALL).strip()
         
         yield clean_response
