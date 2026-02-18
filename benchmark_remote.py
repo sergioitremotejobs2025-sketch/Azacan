@@ -5,14 +5,14 @@ import sys
 BACKEND_URL = "http://136.112.132.41:8000/api/recommend/query/stream/"
 
 def benchmark_query(query):
-    print(f"\nBenchmarking: '{query}'")
+    print(f"\nBenchmarking: '{query}'", flush=True)
     start_time = time.time()
     
     try:
         # Use stream=True to measure TTFT
         with requests.post(BACKEND_URL, json={"query": query}, stream=True, timeout=60) as r:
             if r.status_code != 200:
-                print(f"Error: {r.status_code} - {r.text}")
+                print(f"Error: {r.status_code} - {r.text}", flush=True)
                 return
 
             first_byte_time = None
@@ -21,27 +21,25 @@ def benchmark_query(query):
             for chunk in r.iter_content(chunk_size=1024):
                 if first_byte_time is None:
                     first_byte_time = time.time() - start_time
-                    print(f"  > Time to First Token (TTFT): {first_byte_time:.2f}s")
+                    print(f"  > Time to First Token (TTFT): {first_byte_time:.2f}s", flush=True)
                 
                 if chunk:
                     total_content_length += len(chunk)
 
             total_time = time.time() - start_time
-            print(f"  > Total Duration: {total_time:.2f}s")
-            print(f"  > Total Content Received: {total_content_length} bytes")
+            print(f"  > Total Duration: {total_time:.2f}s", flush=True)
+            print(f"  > Total Content Received: {total_content_length} bytes", flush=True)
 
     except requests.exceptions.RequestException as e:
-        print(f"Request failed: {e}")
+        print(f"Request failed: {e}", flush=True)
 
 if __name__ == "__main__":
+    import time
+    unique_suffix = int(time.time())
     queries = [
-        "amor", 
-        "Science Fiction about space", 
-        "History of Rome",
-        "Artificial Intelligence ethics"
+        f"amor {unique_suffix}"
     ]
     
-    print(f"Targeting: {BACKEND_URL}")
+    print(f"Targeting: {BACKEND_URL}", flush=True)
     for q in queries:
         benchmark_query(q)
-        time.sleep(2) # cool down
