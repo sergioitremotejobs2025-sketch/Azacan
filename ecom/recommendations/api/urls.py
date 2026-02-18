@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import BookViewSet, recommend_by_user, recommend_by_title, recommend_by_query, recommend_by_query_stream, submit_feedback
+from .views import BookViewSet, recommend_by_user, recommend_by_title, recommend_by_query, recommend_by_query_stream, submit_feedback, debug_stream
 
 router = DefaultRouter()
 router.register(r'books', BookViewSet, basename='book')
@@ -11,5 +11,6 @@ urlpatterns = [
     path('recommend/title/', recommend_by_title, name='recommend_by_title'),
     path('recommend/query/', recommend_by_query, name='recommend_by_query'),
     path('recommend/query/stream/', recommend_by_query_stream, name='recommend_by_query_stream'),
+    path('recommend/debug-stream/', debug_stream, name='debug_stream'),
     path('recommend/feedback/', submit_feedback, name='submit_feedback'),
 ]

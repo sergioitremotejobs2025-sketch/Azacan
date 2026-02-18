@@ -101,3 +101,19 @@ def submit_feedback(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def debug_stream(request):
+    def event_stream():
+        import time
+        print("Debug stream started", flush=True)
+        yield " " # immediate flush
+        for i in range(10):
+            msg = f"Chunk {i}\n"
+            print(f"Yielding: {msg.strip()}", flush=True)
+            yield msg
+            time.sleep(1)
+        print("Debug stream finished", flush=True)
+
+    return StreamingHttpResponse(event_stream(), content_type='text/plain')
