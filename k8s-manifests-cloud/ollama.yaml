@@ -28,9 +28,18 @@ spec:
       containers:
       - name: ollama
         image: ollama/ollama:latest
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            ollama serve & 
+            sleep 5;
+            echo "Pulling deepseek-r1:1.5b..."
+            ollama pull deepseek-r1:1.5b
+            echo "Pulling deepseek-coder:1.3b..."
+            ollama pull deepseek-coder:1.3b
+            wait
         ports:
         - containerPort: 11434
-        # Optional: Add volume for model storage to avoid re-downloading
         volumeMounts:
         - name: ollama-data
           mountPath: /root/.ollama
