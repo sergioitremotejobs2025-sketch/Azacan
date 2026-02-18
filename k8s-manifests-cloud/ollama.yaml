@@ -40,6 +40,9 @@ spec:
             wait
         ports:
         - containerPort: 11434
+        env:
+        - name: OLLAMA_KEEP_ALIVE
+          value: "1m"
         volumeMounts:
         - name: ollama-data
           mountPath: /root/.ollama

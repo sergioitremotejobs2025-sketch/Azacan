@@ -47,7 +47,7 @@ if [ "$CLUSTER_STATUS" == "NOT_FOUND" ]; then
     gcloud container clusters create $CLUSTER_NAME \
         --region $REGION \
         --num-nodes 3 \
-        --machine-type e2-medium --quiet
+        --machine-type e2-standard-2 --quiet
 else
     echo "Cluster already exists (Status: $CLUSTER_STATUS)."
 fi
