@@ -316,16 +316,22 @@ def get_reranked_books(query: str, top_k: int = 5, candidates_k: int = 20, enabl
     Retrieve candidate books via vector search and then re-rank them using a Cross-Encoder.
     Returns: List of Book objects (sorted by relevance)
     """
+    import time
+    func_start = time.time()
     candidates = []
     
     # 1. Get functional candidates (more than we need)
     if enable_expansion:
         try:
+            expansion_start = time.time()
             from recommendations.expansion import expand_query
             variations = expand_query(query)
+            expansion_duration = time.time() - expansion_start
+            logger.info(f"Query Expansion took {expansion_duration:.3f}s. Variations: {variations}")
             
             seen_ids = set()
             
+            vector_search_start = time.time()
             # Parallelize vector searches for all variations
             with ThreadPoolExecutor(max_workers=5) as executor:
                 # Ensure variations are strings and not empty
@@ -343,17 +349,22 @@ def get_reranked_books(query: str, top_k: int = 5, candidates_k: int = 20, enabl
                     except Exception as exc:
                         logger.error(f"Search for '{future_to_query[future]}' generated an exception: {exc}")
 
-            logger.info(f"Expansion found {len(candidates)} unique candidates from {len(variations)} queries")
+            vector_search_duration = time.time() - vector_search_start
+            logger.info(f"Vector Search (expanded) found {len(candidates)} unique candidates in {vector_search_duration:.3f}s")
+
         except Exception as e:
             logger.error(f"Expansion failed: {e}")
             candidates = list(get_similar_books(query, top_k=candidates_k))
     else:
+        vector_search_start = time.time()
         candidates = list(get_similar_books(query, top_k=candidates_k))
+        logger.info(f"Vector Search (single) took {time.time() - vector_search_start:.3f}s")
     
     if not candidates:
         return []
 
     try:
+        reranker_start = time.time()
         reranker = get_reranker_model()
         
         # 2. Prepare pairs for cross-encoding (Query, Document)
@@ -373,7 +384,9 @@ def get_reranked_books(query: str, top_k: int = 5, candidates_k: int = 20, enabl
         # Sort descending by score
         candidates.sort(key=lambda x: x.rerank_score, reverse=True)
         
-        logger.info(f"Reranked {len(candidates)} books for query '{query}'")
+        reranker_duration = time.time() - reranker_start
+        total_duration = time.time() - func_start
+        logger.info(f"Cross-Encoder Reranked {len(candidates)} books in {reranker_duration:.3f}s. Total get_reranked_books time: {total_duration:.3f}s")
         return candidates[:top_k]
         
     except Exception as e:
@@ -402,34 +415,50 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
     Generate book recommendations based on a natural language query using vector similarity (RAG-style).
     Yields chunks of the LLM response for streaming.
     """
+    import time
+    overall_start = time.time()
+    
     # Check persistent cache first
     try:
+        cache_check_start = time.time()
         cached_entry = SearchQueryCache.objects.filter(query__iexact=query).first()
         if cached_entry:
-            logger.info(f"Serving cached recommendations for: {query}")
+            logger.info(f"Serving cached recommendations for: {query} (Cache check took {time.time() - cache_check_start:.3f}s)")
             yield cached_entry.response
             return
     except Exception as e:
         logger.error(f"Cache read error: {e}")
 
     try:
+        rerank_start = time.time()
         similar_books = get_reranked_books(query, top_k)
+        rerank_duration = time.time() - rerank_start
+        
         count = len(similar_books)
-        logger.info(f"Stream: Found {count} similar books for query: {query}")
+        logger.info(f"Stream: Found {count} similar books for query: '{query}' in {rerank_duration:.3f}s")
+        
         if not similar_books:
             yield "[]"
             return
 
         context = "\n".join([f"Title: {b.title}, Author: {b.author}, Description: {b.description}" for b in similar_books])
         
+        llm_start = time.time()
         llm = ChatOllama(model="deepseek-r1:1.5b", temperature=0.1, base_url=os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434'))
         prompt = get_recommendation_prompt()
         chain = prompt | llm | StrOutputParser()
         
         full_response = ""
         in_think_block = False
+        first_token_time = None
+        
+        logger.info(f"Starting LLM stream for '{query}'...")
         
         for chunk in chain.stream({"query": query, "context": context}):
+            if first_token_time is None:
+                first_token_time = time.time()
+                logger.info(f"LLM First Token for '{query}': {first_token_time - llm_start:.3f}s")
+
             full_response += chunk
             
             # Simple streaming filter for <think> blocks
@@ -446,6 +475,10 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
             
             if not in_think_block:
                 yield chunk
+        
+        total_time = time.time() - overall_start
+        llm_duration = time.time() - llm_start
+        logger.info(f"Full request for '{query}' completed in {total_time:.3f}s (LLM: {llm_duration:.3f}s)")
 
         # Cache the result after successful generation
         if full_response and len(full_response) > 10:
