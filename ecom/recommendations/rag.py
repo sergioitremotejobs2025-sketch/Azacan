@@ -327,7 +327,7 @@ def get_reranked_books(query: str, top_k: int = 5, candidates_k: int = 20, enabl
             from recommendations.expansion import expand_query
             variations = expand_query(query)
             expansion_duration = time.time() - expansion_start
-            logger.info(f"Query Expansion took {expansion_duration:.3f}s. Variations: {variations}")
+            print(f"Query Expansion took {expansion_duration:.3f}s. Variations: {variations}", flush=True)
             
             seen_ids = set()
             
@@ -347,18 +347,18 @@ def get_reranked_books(query: str, top_k: int = 5, candidates_k: int = 20, enabl
                                 candidates.append(book)
                                 seen_ids.add(book.id)
                     except Exception as exc:
-                        logger.error(f"Search for '{future_to_query[future]}' generated an exception: {exc}")
+                        print(f"Search for '{future_to_query[future]}' generated an exception: {exc}", flush=True)
 
             vector_search_duration = time.time() - vector_search_start
-            logger.info(f"Vector Search (expanded) found {len(candidates)} unique candidates in {vector_search_duration:.3f}s")
+            print(f"Vector Search (expanded) found {len(candidates)} unique candidates in {vector_search_duration:.3f}s", flush=True)
 
         except Exception as e:
-            logger.error(f"Expansion failed: {e}")
+            print(f"Expansion failed: {e}", flush=True)
             candidates = list(get_similar_books(query, top_k=candidates_k))
     else:
         vector_search_start = time.time()
         candidates = list(get_similar_books(query, top_k=candidates_k))
-        logger.info(f"Vector Search (single) took {time.time() - vector_search_start:.3f}s")
+        print(f"Vector Search (single) took {time.time() - vector_search_start:.3f}s", flush=True)
     
     if not candidates:
         return []
@@ -386,11 +386,11 @@ def get_reranked_books(query: str, top_k: int = 5, candidates_k: int = 20, enabl
         
         reranker_duration = time.time() - reranker_start
         total_duration = time.time() - func_start
-        logger.info(f"Cross-Encoder Reranked {len(candidates)} books in {reranker_duration:.3f}s. Total get_reranked_books time: {total_duration:.3f}s")
+        print(f"Cross-Encoder Reranked {len(candidates)} books in {reranker_duration:.3f}s. Total get_reranked_books time: {total_duration:.3f}s", flush=True)
         return candidates[:top_k]
         
     except Exception as e:
-        logger.error(f"Reranking failed: {e}. Falling back to vector search.")
+        print(f"Reranking failed: {e}. Falling back to vector search.", flush=True)
         return candidates[:top_k]
 
 def get_recommendation_prompt():
@@ -418,16 +418,19 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
     import time
     overall_start = time.time()
     
+    # Send an initial space to start the stream and keep connection alive
+    yield " "
+
     # Check persistent cache first
     try:
         cache_check_start = time.time()
         cached_entry = SearchQueryCache.objects.filter(query__iexact=query).first()
         if cached_entry:
-            logger.info(f"Serving cached recommendations for: {query} (Cache check took {time.time() - cache_check_start:.3f}s)")
+            print(f"Serving cached recommendations for: {query} (Cache check took {time.time() - cache_check_start:.3f}s)", flush=True)
             yield cached_entry.response
             return
     except Exception as e:
-        logger.error(f"Cache read error: {e}")
+        print(f"Cache read error: {e}", flush=True)
 
     try:
         rerank_start = time.time()
@@ -435,7 +438,7 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
         rerank_duration = time.time() - rerank_start
         
         count = len(similar_books)
-        logger.info(f"Stream: Found {count} similar books for query: '{query}' in {rerank_duration:.3f}s")
+        print(f"Stream: Found {count} similar books for query: '{query}' in {rerank_duration:.3f}s", flush=True)
         
         if not similar_books:
             yield "[]"
@@ -452,12 +455,12 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
         in_think_block = False
         first_token_time = None
         
-        logger.info(f"Starting LLM stream for '{query}'...")
+        print(f"Starting LLM stream for '{query}'...", flush=True)
         
         for chunk in chain.stream({"query": query, "context": context}):
             if first_token_time is None:
                 first_token_time = time.time()
-                logger.info(f"LLM First Token for '{query}': {first_token_time - llm_start:.3f}s")
+                print(f"LLM First Token for '{query}': {first_token_time - llm_start:.3f}s", flush=True)
 
             full_response += chunk
             
@@ -478,7 +481,7 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
         
         total_time = time.time() - overall_start
         llm_duration = time.time() - llm_start
-        logger.info(f"Full request for '{query}' completed in {total_time:.3f}s (LLM: {llm_duration:.3f}s)")
+        print(f"Full request for '{query}' completed in {total_time:.3f}s (LLM: {llm_duration:.3f}s)", flush=True)
 
         # Cache the result after successful generation
         if full_response and len(full_response) > 10:
@@ -486,10 +489,10 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
                 # Use get_or_create to handles concurrent requests safely
                 SearchQueryCache.objects.get_or_create(query=query, defaults={'response': full_response})
             except Exception as e:
-                logger.error(f"Failed to cache search query '{query}': {e}")
+                print(f"Failed to cache search query '{query}': {e}", flush=True)
 
     except Exception as e:
-        logger.error(f"Streaming failed: {e}")
+        print(f"Streaming failed: {e}", flush=True)
         yield f"Error: {str(e)}"
 
 def get_recommendations_by_query(query: str, top_k: int = 5):
