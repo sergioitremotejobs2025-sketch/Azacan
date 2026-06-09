@@ -168,20 +168,19 @@ echo -e "${YELLOW}Starting service tunnels for easy accessibility...${NC}"
 minikube tunnel > /tmp/minikube_tunnel.log 2>&1 &
 TUNNEL_PID=$!
 
-# 7.2 Start Service Bridges (Fallback for agent/environments without sudo)
-# This binds to a random high port on 127.0.0.1, making it reachable even without port 80 access.
-echo -e "Starting ${YELLOW}frontend-service${NC} bridge..."
-minikube service -n libro-mind frontend-service --url > /tmp/frontend_service.log 2>&1 &
+# 7.2 Start Service Bridges (Fixed Ports)
+echo -e "Starting ${YELLOW}frontend-service${NC} port-forward on port 3000..."
+kubectl port-forward -n libro-mind svc/frontend-service 3000:3000 > /tmp/frontend_service.log 2>&1 &
 FRONTEND_SERVICE_PID=$!
 
-echo -e "Starting ${YELLOW}backend-service${NC} bridge..."
-minikube service -n libro-mind backend-service --url > /tmp/backend_service.log 2>&1 &
+echo -e "Starting ${YELLOW}backend-service${NC} port-forward on port 8000..."
+kubectl port-forward -n libro-mind svc/backend-service 8000:8000 > /tmp/backend_service.log 2>&1 &
 BACKEND_SERVICE_PID=$!
 
-# Give them a moment to generate URLs
-sleep 5
-FRONTEND_URL=$(grep "http://127.0.0.1" /tmp/frontend_service.log | tail -n 1 || echo "")
-BACKEND_URL=$(grep "http://127.0.0.1" /tmp/backend_service.log | tail -n 1 || echo "")
+# Give them a moment to start
+sleep 3
+FRONTEND_URL="http://127.0.0.1:3000"
+BACKEND_URL="http://127.0.0.1:8000"
 
 if [[ -n "$FRONTEND_URL" ]]; then
     echo -e "${GREEN}Frontend Bridge active at: ${BLUE}$FRONTEND_URL${NC}"
