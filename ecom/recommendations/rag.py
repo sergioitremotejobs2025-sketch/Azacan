@@ -473,7 +473,7 @@ def get_recommendations_by_query_stream(query: str, top_k: int = 5):
             method="POST"
         )
         
-        with urllib.request.urlopen(req, timeout=120) as resp:
+        with urllib.request.urlopen(req, timeout=600) as resp:
             result = _json.loads(resp.read().decode('utf-8'))
             raw_response = result.get("response", "")
         
