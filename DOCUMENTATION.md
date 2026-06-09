@@ -6,6 +6,17 @@ Welcome to the comprehensive documentation for **Libro-Mind**, an AI-Powered Bib
 Libro-Mind is built on a modular microservices architecture, leveraging Retrieval-Augmented Generation (RAG), Semantic Search, and Large Language Models (LLMs) to provide dynamic, personalized book recommendations.
 
 ## 🏗️ Architecture & Components
+
+```mermaid
+graph TD
+    User((User)) -->|HTTPS| Frontend[Next.js Frontend]
+    Frontend -->|API Requests| Backend[Django API Gateway]
+    Backend -->|Vector Search| DB[(PostgreSQL + pgvector)]
+    Backend -->|LLM Inference| Ollama[Ollama AI Service]
+    Backend -->|Auth & Tracking| JSONServer[JSON Data Server]
+    Ollama -->|Local CPU/GPU| DeepSeek[[DeepSeek R1 / Coder]]
+```
+
 The system is divided into five specialized microservices to ensure scalability and separation of concerns:
 
 1. **Next.js Frontend (`frontend`)**: A modern React-based user interface running on Node.js 20. It handles real-time streaming of AI responses and provides the visual layer.
